@@ -1,0 +1,117 @@
+---
+import '../styles/global.css';
+---
+
+<html lang="ja">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>ブログシステム - Astro</title>
+	</head>
+	<body class="bg-gray-50 text-gray-900">
+		<div class="min-h-screen">
+			<!-- ヘッダー -->
+			<header class="bg-white shadow-sm border-b">
+				<div class="max-w-4xl mx-auto px-4 py-6">
+					<h1 class="text-3xl font-bold text-gray-900">My Blog</h1>
+					<p class="text-gray-600 mt-2">Astro + TypeScript + Tailwind CSS で構築されたブログシステム</p>
+				</div>
+			</header>
+
+			<!-- メインコンテンツ -->
+			<main class="max-w-4xl mx-auto px-4 py-8">
+				<!-- ウェルカムセクション -->
+				<section class="bg-white rounded-lg shadow-sm p-8 mb-8">
+					<h2 class="text-2xl font-semibold text-gray-900 mb-4">ようこそ！</h2>
+					<p class="text-gray-700 leading-relaxed mb-6">
+						このブログシステムは、Astro、TypeScript、React、Tailwind CSSを使用して構築されています。
+						静的サイト生成（SSG）により高速で、SEOに優れたブログを提供します。
+					</p>
+					<div class="flex flex-wrap gap-2">
+						<span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">Astro</span>
+						<span class="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm font-medium">TypeScript</span>
+						<span class="px-3 py-1 bg-purple-100 text-purple-800 rounded-full text-sm font-medium">React</span>
+						<span class="px-3 py-1 bg-pink-100 text-pink-800 rounded-full text-sm font-medium">Tailwind CSS</span>
+					</div>
+				</section>
+
+				<!-- 機能紹介 -->
+				<section class="grid md:grid-cols-2 gap-6 mb-8">
+					<div class="bg-white rounded-lg shadow-sm p-6">
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">高速なパフォーマンス</h3>
+						<p class="text-gray-700">
+							Astroの静的サイト生成により、超高速なページ読み込みを実現します。
+						</p>
+					</div>
+					<div class="bg-white rounded-lg shadow-sm p-6">
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">SEO最適化</h3>
+						<p class="text-gray-700">
+							静的HTMLの生成により、検索エンジンに優しいサイト構造を提供します。
+						</p>
+					</div>
+					<div class="bg-white rounded-lg shadow-sm p-6">
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">レスポンシブデザイン</h3>
+						<p class="text-gray-700">
+							Tailwind CSSにより、あらゆるデバイスで美しく表示されます。
+						</p>
+					</div>
+					<div class="bg-white rounded-lg shadow-sm p-6">
+						<h3 class="text-xl font-semibold text-gray-900 mb-3">型安全性</h3>
+						<p class="text-gray-700">
+							TypeScriptにより、開発時の型安全性とコード品質を保証します。
+						</p>
+					</div>
+				</section>
+
+				<!-- サンプル記事プレビュー -->
+				<section class="bg-white rounded-lg shadow-sm p-8">
+					<h2 class="text-2xl font-semibold text-gray-900 mb-6">最新記事</h2>
+					<div class="space-y-6">
+						<article class="border-b border-gray-200 pb-6 last:border-b-0">
+							<h3 class="text-xl font-semibold text-gray-900 mb-2">
+								<a href="#" class="hover:text-blue-600 transition-colors">
+									Astroでブログシステムを構築する方法
+								</a>
+							</h3>
+							<p class="text-gray-600 text-sm mb-3">2024年1月15日</p>
+							<p class="text-gray-700 leading-relaxed">
+								Astroを使用してモダンなブログシステムを構築する手順を詳しく解説します。
+								TypeScriptとTailwind CSSを組み合わせることで、保守性の高いコードベースを実現できます。
+							</p>
+							<div class="flex gap-2 mt-3">
+								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Astro</span>
+								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">TypeScript</span>
+							</div>
+						</article>
+						<article class="border-b border-gray-200 pb-6 last:border-b-0">
+							<h3 class="text-xl font-semibold text-gray-900 mb-2">
+								<a href="#" class="hover:text-blue-600 transition-colors">
+									Tailwind CSSでレスポンシブデザインを実装
+								</a>
+							</h3>
+							<p class="text-gray-600 text-sm mb-3">2024年1月10日</p>
+							<p class="text-gray-700 leading-relaxed">
+								Tailwind CSSのユーティリティクラスを活用して、効率的にレスポンシブデザインを実装する方法を紹介します。
+							</p>
+							<div class="flex gap-2 mt-3">
+								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">CSS</span>
+								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">デザイン</span>
+							</div>
+						</article>
+					</div>
+				</section>
+			</main>
+
+			<!-- フッター -->
+			<footer class="bg-white border-t mt-12">
+				<div class="max-w-4xl mx-auto px-4 py-6">
+					<p class="text-center text-gray-600">
+						© 2024 My Blog. Built with Astro, TypeScript, React & Tailwind CSS.
+					</p>
+				</div>
+			</footer>
+		</div>
+	</body>
+</html>
