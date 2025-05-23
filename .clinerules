@@ -1,24 +1,54 @@
-# プロジェクト概要
-- フロントエンドだけで完結するブログシステム
-
-
 # 重要事項
-
-- docsフォルダには資料があるので確認する
-
+- README.mdを必ず確認する
+- docsフォルダには詳細資料があるので確認する
 
 # 技術スタック
-- 言語: TyperScirpt
+- **言語**: TypeScript
+- **フレームワーク**: Gatsby（React ベース）
+- **スタイリング**: Tailwind CSS
+- **ビルドツール**: Gatsby CLI
+
 
 # コーディング規約
+## TypeScript
+- 厳密な型定義を心がける
+- `readonly` を積極的に使用
+- `interface` や `class` は極力避け、型エイリアスを使用
 
-- フォルダ/ファイルを作成する際は名前をケバブケースで統一する
-- 関数型プログラミングに寄せる
-  - interfaceやclassを極力使わない
-  - 純粋な関数を心がける
-  - 副作用のスコープを狭め、数も最小限にする
-- 型定義はできるだけ厳密に定義する
-  - できるだけreadonlyを使う
-- TSXでreturnする部分にロジックを埋め込まず、関数や変数に切り出す
-- コメントで変更内容を残すことを禁止
-- 1ファイルの上限は100~150行を目安とし、超える場合はファイルを分割すること
+## React/Gatsby
+- 関数型コンポーネントを使用
+- カスタムフックで状態管理ロジックを分離
+- TSXのreturn部分にロジックを埋め込まない
+
+## ファイル命名
+- ケバブケースで統一
+- コンポーネントファイルは `.tsx`
+- ユーティリティファイルは `.ts`
+
+## ファイルサイズ
+- 1ファイル100-150行を目安
+- 超過する場合は機能単位で分割
+
+## Tailwind CSS
+- ユーティリティファーストでの実装
+- `@tailwindcss/typography`でブログ記事の美しい表示
+- レスポンシブデザインは`sm:`, `md:`, `lg:`プレフィックスを活用
+- ダークモード対応は`dark:`プレフィックスを使用
+
+### ブログ記事のスタイリング例
+```tsx
+// 記事コンテンツの表示
+<div className="prose prose-lg prose-slate dark:prose-invert max-w-none">
+  {/* マークダウンコンテンツ */}
+</div>
+
+// タグの表示
+<span className="px-2 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded text-xs">
+  {tag}
+</span>
+
+// レスポンシブレイアウト
+<div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
+  {/* 記事カード */}
+</div>
+```
