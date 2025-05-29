@@ -1,0 +1,181 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+
+export async function getStaticPaths() {
+  const blogEntries = await getCollection('blog');
+  return blogEntries.map((entry) => ({
+    params: { slug: entry.slug },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+
+// 日付をフォーマットする関数
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{entry.data.title}</title>
+  <meta name="description" content={entry.data.description}>
+  <meta property="og:title" content={entry.data.title}>
+  <meta property="og:description" content={entry.data.description}>
+  <meta property="og:type" content="article">
+  <meta property="article:published_time" content={entry.data.date.toISOString()}>
+  {entry.data.updated && (
+    <meta property="article:modified_time" content={entry.data.updated.toISOString()}>
+  )}
+  {entry.data.tags.map((tag) => (
+    <meta property="article:tag" content={tag}>
+  ))}
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8 max-w-4xl">
+    <nav class="mb-8">
+      <a href="/blog" class="text-blue-600 hover:text-blue-800 transition-colors">
+        ← ブログ一覧に戻る
+      </a>
+    </nav>
+
+    <article class="bg-white rounded-lg shadow-md p-8">
+      <header class="mb-8">
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">{entry.data.title}</h1>
+        
+        <div class="flex items-center text-sm text-gray-500 space-x-4 mb-4">
+          <time datetime={entry.data.date.toISOString()}>
+            公開: {formatDate(entry.data.date)}
+          </time>
+          {entry.data.updated && (
+            <time datetime={entry.data.updated.toISOString()}>
+              更新: {formatDate(entry.data.updated)}
+            </time>
+          )}
+        </div>
+
+        <div class="flex flex-wrap gap-2 mb-6">
+          {entry.data.tags.map((tag: string) => (
+            <span class="inline-block bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded-full">
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <p class="text-lg text-gray-700 leading-relaxed">{entry.data.description}</p>
+      </header>
+
+      <div class="prose prose-lg max-w-none">
+        <Content />
+      </div>
+    </article>
+
+    <nav class="mt-8 flex justify-between">
+      <a href="/blog" class="text-blue-600 hover:text-blue-800 transition-colors">
+        ← ブログ一覧に戻る
+      </a>
+      <a href="/" class="text-blue-600 hover:text-blue-800 transition-colors">
+        ホームに戻る →
+      </a>
+    </nav>
+  </div>
+
+  <style>
+    .prose {
+      color: #374151;
+      line-height: 1.75;
+    }
+    
+    .prose h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+    
+    .prose h2 {
+      font-size: 1.875rem;
+      font-weight: 700;
+      margin-top: 2rem;
+      margin-bottom: 1rem;
+      color: #111827;
+    }
+    
+    .prose h3 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      margin-top: 1.5rem;
+      margin-bottom: 0.75rem;
+      color: #111827;
+    }
+    
+    .prose p {
+      margin-bottom: 1.25rem;
+    }
+    
+    .prose ul, .prose ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+    }
+    
+    .prose li {
+      margin-bottom: 0.5rem;
+    }
+    
+    .prose pre {
+      background-color: #1f2937;
+      color: #f9fafb;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+    }
+    
+    .prose code {
+      background-color: #f3f4f6;
+      color: #1f2937;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      font-size: 0.875rem;
+    }
+    
+    .prose pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    
+    .prose blockquote {
+      border-left: 4px solid #3b82f6;
+      padding-left: 1rem;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: #6b7280;
+    }
+    
+    .prose a {
+      color: #3b82f6;
+      text-decoration: underline;
+    }
+    
+    .prose a:hover {
+      color: #1d4ed8;
+    }
+    
+    .prose strong {
+      font-weight: 600;
+      color: #111827;
+    }
+  </style>
+</body>
+</html>

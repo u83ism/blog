@@ -1,5 +1,24 @@
 ---
 import '../styles/global.css';
+import { getCollection } from 'astro:content';
+
+// 最新のブログ記事を取得
+const allBlogPosts = await getCollection('blog', ({ data }) => {
+  return data.published === true;
+});
+
+const latestPosts = allBlogPosts
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+
+// 日付をフォーマットする関数
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
 ---
 
 <html lang="ja">
@@ -17,6 +36,11 @@ import '../styles/global.css';
 				<div class="max-w-4xl mx-auto px-4 py-6">
 					<h1 class="text-3xl font-bold text-gray-900">My Blog</h1>
 					<p class="text-gray-600 mt-2">Astro + TypeScript + Tailwind CSS で構築されたブログシステム</p>
+					<nav class="mt-4">
+						<a href="/blog" class="inline-block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
+							ブログ記事一覧を見る
+						</a>
+					</nav>
 				</div>
 			</header>
 
@@ -65,41 +89,37 @@ import '../styles/global.css';
 					</div>
 				</section>
 
-				<!-- サンプル記事プレビュー -->
+				<!-- 最新記事 -->
 				<section class="bg-white rounded-lg shadow-sm p-8">
-					<h2 class="text-2xl font-semibold text-gray-900 mb-6">最新記事</h2>
+					<div class="flex justify-between items-center mb-6">
+						<h2 class="text-2xl font-semibold text-gray-900">最新記事</h2>
+						<a href="/blog" class="text-blue-600 hover:text-blue-800 font-medium transition-colors">
+							すべての記事を見る →
+						</a>
+					</div>
 					<div class="space-y-6">
-						<article class="border-b border-gray-200 pb-6 last:border-b-0">
-							<h3 class="text-xl font-semibold text-gray-900 mb-2">
-								<a href="#" class="hover:text-blue-600 transition-colors">
-									Astroでブログシステムを構築する方法
-								</a>
-							</h3>
-							<p class="text-gray-600 text-sm mb-3">2024年1月15日</p>
-							<p class="text-gray-700 leading-relaxed">
-								Astroを使用してモダンなブログシステムを構築する手順を詳しく解説します。
-								TypeScriptとTailwind CSSを組み合わせることで、保守性の高いコードベースを実現できます。
-							</p>
-							<div class="flex gap-2 mt-3">
-								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">Astro</span>
-								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">TypeScript</span>
-							</div>
-						</article>
-						<article class="border-b border-gray-200 pb-6 last:border-b-0">
-							<h3 class="text-xl font-semibold text-gray-900 mb-2">
-								<a href="#" class="hover:text-blue-600 transition-colors">
-									Tailwind CSSでレスポンシブデザインを実装
-								</a>
-							</h3>
-							<p class="text-gray-600 text-sm mb-3">2024年1月10日</p>
-							<p class="text-gray-700 leading-relaxed">
-								Tailwind CSSのユーティリティクラスを活用して、効率的にレスポンシブデザインを実装する方法を紹介します。
-							</p>
-							<div class="flex gap-2 mt-3">
-								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">CSS</span>
-								<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">デザイン</span>
-							</div>
-						</article>
+						{latestPosts.length > 0 ? (
+							latestPosts.map((post) => (
+								<article class="border-b border-gray-200 pb-6 last:border-b-0">
+									<h3 class="text-xl font-semibold text-gray-900 mb-2">
+										<a href={`/blog/${post.slug}`} class="hover:text-blue-600 transition-colors">
+											{post.data.title}
+										</a>
+									</h3>
+									<p class="text-gray-600 text-sm mb-3">{formatDate(post.data.date)}</p>
+									<p class="text-gray-700 leading-relaxed mb-3">
+										{post.data.description}
+									</p>
+									<div class="flex gap-2">
+										{post.data.tags.map((tag) => (
+											<span class="px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs">{tag}</span>
+										))}
+									</div>
+								</article>
+							))
+						) : (
+							<p class="text-gray-500 text-center py-8">まだ記事がありません。</p>
+						)}
 					</div>
 				</section>
 			</main>

@@ -1,0 +1,89 @@
+---
+import { getCollection } from 'astro:content';
+
+// 公開済みのブログ記事を取得し、日付順でソート
+const allBlogPosts = await getCollection('blog', ({ data }) => {
+  return data.published === true;
+});
+
+const sortedPosts = allBlogPosts.sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+);
+
+// 日付をフォーマットする関数
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('ja-JP', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+}
+---
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ブログ記事一覧</title>
+  <meta name="description" content="ブログ記事の一覧ページです。">
+</head>
+<body class="bg-gray-50 min-h-screen">
+  <div class="container mx-auto px-4 py-8">
+    <header class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4">ブログ記事一覧</h1>
+      <p class="text-gray-600">全 {sortedPosts.length} 件の記事</p>
+    </header>
+
+    <main>
+      <div class="space-y-6">
+        {sortedPosts.map((post) => (
+          <article class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+            <header class="mb-4">
+              <h2 class="text-2xl font-semibold text-gray-900 mb-2">
+                <a href={`/blog/${post.slug}`} class="hover:text-blue-600 transition-colors">
+                  {post.data.title}
+                </a>
+              </h2>
+              <div class="flex items-center text-sm text-gray-500 space-x-4">
+                <time datetime={post.data.date.toISOString()}>
+                  {formatDate(post.data.date)}
+                </time>
+                {post.data.updated && (
+                  <span>
+                    更新: {formatDate(post.data.updated)}
+                  </span>
+                )}
+              </div>
+            </header>
+
+            <p class="text-gray-700 mb-4">{post.data.description}</p>
+
+            <footer class="flex items-center justify-between">
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.map((tag) => (
+                  <span class="inline-block bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <a 
+                href={`/blog/${post.slug}`}
+                class="text-blue-600 hover:text-blue-800 font-medium transition-colors"
+              >
+                続きを読む →
+              </a>
+            </footer>
+          </article>
+        ))}
+      </div>
+    </main>
+
+    <nav class="mt-8">
+      <a href="/" class="text-blue-600 hover:text-blue-800 transition-colors">
+        ← ホームに戻る
+      </a>
+    </nav>
+  </div>
+</body>
+</html>
