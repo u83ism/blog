@@ -1,8 +1,9 @@
 import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
 
-// 雑記エントリのコレクション定義
+// 雑記エントリのコレクション定義（Astro 6: glob ローダーを使用）
 const posts = defineCollection({
-  type: 'content',
+  loader: glob({ pattern: '**/*.md', base: './src/content/posts' }),
   schema: z.object({
     // 投稿日付（必須）
     date: z.date(),
