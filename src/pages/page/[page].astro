@@ -3,6 +3,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
+import Pagination from '@/components/Pagination.astro';
 import TagList from '@/components/TagList.astro';
 import ArchiveNav from '@/components/ArchiveNav.astro';
 import { sortPostsByDateDesc, collectTags, groupPostsByYear } from '@/lib/posts';
@@ -40,7 +41,6 @@ const allPosts = await getCollection('posts');
 const tags = collectTags(allPosts);
 const years = groupPostsByYear(allPosts).map(({ year }) => year);
 
-const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title={`記事一覧 ${pageNum}ページ目`}>
@@ -54,52 +54,7 @@ const base = import.meta.env.BASE_URL;
 
     <PostList posts={posts} />
 
-    <nav class="pagination" aria-label="ページナビゲーション">
-      <div class="pagination-prev">
-        {pageNum === 2
-          ? <a href={`${base}`} data-astro-prefetch>← 前のページ</a>
-          : <a href={`${base}page/${pageNum - 1}/`} data-astro-prefetch>← 前のページ</a>
-        }
-      </div>
-      <span class="pagination-info">{pageNum} / {totalPages} ページ</span>
-      <div class="pagination-next">
-        {pageNum < totalPages && (
-          <a href={`${base}page/${pageNum + 1}/`} data-astro-prefetch>次のページ →</a>
-        )}
-      </div>
-    </nav>
+    <Pagination pageNum={pageNum} totalPages={totalPages} />
   </div>
 </Layout>
 
-<style>
-  .pagination {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 32px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-  }
-
-  .pagination-info {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-  }
-
-  .pagination-prev a,
-  .pagination-next a {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--accent);
-    text-decoration: none;
-    padding: 6px 14px;
-    border: 1px solid var(--accent);
-    border-radius: var(--radius);
-    transition: background 0.1s;
-  }
-
-  .pagination-prev a:hover,
-  .pagination-next a:hover {
-    background: var(--accent-light);
-  }
-</style>

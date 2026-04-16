@@ -1,0 +1,62 @@
+---
+// ページネーションコンポーネント（記事一覧用）
+interface Props {
+  pageNum: number;
+  totalPages: number;
+}
+
+const { pageNum, totalPages } = Astro.props;
+const base = import.meta.env.BASE_URL;
+
+// 前ページのURL（1ページ目はトップ、それ以降は /page/N/）
+const prevUrl = pageNum === 2 ? `${base}` : `${base}page/${pageNum - 1}/`;
+// 次ページのURL
+const nextUrl = `${base}page/${pageNum + 1}/`;
+---
+
+<nav class="pagination" aria-label="ページナビゲーション">
+  <div class="pagination-prev">
+    {pageNum > 1 && (
+      <a href={prevUrl} data-astro-prefetch>← 前のページ</a>
+    )}
+  </div>
+  <span class="pagination-info">{pageNum} / {totalPages} ページ</span>
+  <div class="pagination-next">
+    {pageNum < totalPages && (
+      <a href={nextUrl} data-astro-prefetch>次のページ →</a>
+    )}
+  </div>
+</nav>
+
+<style>
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pagination-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .pagination-prev a,
+  .pagination-next a {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    transition: background 0.1s;
+  }
+
+  .pagination-prev a:hover,
+  .pagination-next a:hover {
+    background: var(--accent-light);
+  }
+</style>
