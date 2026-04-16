@@ -1,0 +1,86 @@
+---
+// 記事一覧ページ（最新順、ページネーション付き）
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import PostList from '@/components/PostList.astro';
+import TagList from '@/components/TagList.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { sortPostsByDateDesc, collectTags, groupPostsByYear } from '@/lib/posts';
+
+// 全記事を取得・ソート
+const allPosts = await getCollection('posts');
+const sortedPosts = sortPostsByDateDesc(allPosts);
+
+// ページネーション（1ページあたり20件）
+const PAGE_SIZE = 20;
+const page = 1;
+const totalPages = Math.ceil(sortedPosts.length / PAGE_SIZE);
+const posts = sortedPosts.slice(0, PAGE_SIZE);
+
+// サイドバー用データ
+const tags = collectTags(allPosts);
+const years = groupPostsByYear(allPosts).map(({ year }) => year);
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="記事一覧">
+  <Fragment slot="sidebar">
+    <TagList tags={tags} />
+    <ArchiveNav years={years} />
+  </Fragment>
+
+  <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    <h1 class="page-heading">最近の記事</h1>
+
+    <PostList posts={posts} />
+
+    <!-- ページネーション -->
+    {totalPages > 1 && (
+      <nav class="pagination" aria-label="ページナビゲーション">
+        <span class="pagination-info">1 / {totalPages} ページ</span>
+        <a href={`${base}page/2/`} class="pagination-next" data-astro-prefetch>次のページ →</a>
+      </nav>
+    )}
+  </div>
+</Layout>
+
+<style>
+  .page-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--mint);
+    color: var(--text);
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .pagination-info {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+
+  .pagination-next {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--mint-deep);
+    text-decoration: none;
+    padding: 6px 14px;
+    border: 1px solid var(--mint);
+    border-radius: var(--radius);
+    transition: background 0.1s;
+  }
+
+  .pagination-next:hover {
+    background: var(--mint);
+  }
+</style>

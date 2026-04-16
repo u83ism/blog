@@ -1,0 +1,29 @@
+---
+// 個別記事ページ（スラッグはファイルパスから生成: posts/2000/2000-04-08）
+import { getCollection, render } from 'astro:content';
+import PostLayout from '@/layouts/PostLayout.astro';
+import { sortPostsByDateDesc } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const sorted = sortPostsByDateDesc(allPosts);
+
+  return sorted.map((post, idx) => ({
+    // Astro 5 では id に .md 拡張子が含まれるため除去してスラッグに使用する
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: {
+      post,
+      // 日付が新しい方が "次の記事"、古い方が "前の記事"
+      prevPost: sorted[idx + 1],
+      nextPost: sorted[idx - 1],
+    },
+  }));
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+const { Content } = await render(post);
+---
+
+<PostLayout post={post} prevPost={prevPost} nextPost={nextPost}>
+  <Content />
+</PostLayout>

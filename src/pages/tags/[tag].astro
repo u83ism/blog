@@ -1,0 +1,78 @@
+---
+// タグ別記事一覧ページ
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import PostList from '@/components/PostList.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { sortPostsByDateDesc, groupPostsByYear } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+
+  // 全タグを収集する
+  const tagSet = new Set<string>();
+  for (const post of allPosts) {
+    for (const tag of post.data.tags) {
+      tagSet.add(tag);
+    }
+  }
+
+  // タグごとに記事をフィルタリングしてページを生成する
+  return [...tagSet].map((tag) => ({
+    params: { tag: encodeURIComponent(tag) },
+    props: {
+      tag,
+      posts: sortPostsByDateDesc(allPosts.filter((p) => p.data.tags.includes(tag))),
+    },
+  }));
+}
+
+interface Props {
+  tag: string;
+  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+}
+
+const { tag, posts } = Astro.props;
+
+// サイドバー用データ
+const allPosts = await getCollection('posts');
+const years = groupPostsByYear(allPosts).map(({ year }) => year);
+---
+
+<Layout title={`#${tag} の記事`}>
+  <Fragment slot="sidebar">
+    <ArchiveNav years={years} />
+  </Fragment>
+
+  <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    <h1 class="page-heading">
+      <span class="tag-badge">#{tag}</span>
+      <span class="post-count">（{posts.length}件）</span>
+    </h1>
+
+    <PostList posts={posts} />
+  </div>
+</Layout>
+
+<style>
+  .page-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--mint);
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+
+  .tag-badge {
+    color: var(--mint-deep);
+  }
+
+  .post-count {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+</style>

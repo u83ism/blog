@@ -1,0 +1,79 @@
+---
+// 年別アーカイブページ（月別グループ表示）
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import PostList from '@/components/PostList.astro';
+import TagList from '@/components/TagList.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { sortPostsByDateDesc, groupPostsByYear, groupPostsByMonth, collectTags } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+  const yearGroups = groupPostsByYear(allPosts);
+
+  return yearGroups.map(({ year, posts }) => ({
+    params: { year: String(year) },
+    props: { year, posts },
+  }));
+}
+
+interface Props {
+  year: number;
+  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+}
+
+const { year, posts } = Astro.props;
+
+// サイドバー用データ
+const allPosts = await getCollection('posts');
+const tags = collectTags(allPosts);
+const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
+
+// 月別グループ化
+const monthGroups = groupPostsByMonth(posts);
+
+const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+---
+
+<Layout title={`${year}年のアーカイブ`}>
+  <Fragment slot="sidebar">
+    <TagList tags={tags} />
+    <ArchiveNav years={sortedYears} currentYear={year} />
+  </Fragment>
+
+  <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    <h1 class="page-heading">{year}年の記事（{posts.length}件）</h1>
+
+    {monthGroups.map(({ month, posts: monthPosts }) => (
+      <section class="month-section">
+        <h2 class="month-heading">{MONTH_NAMES[month - 1]}</h2>
+        <PostList posts={monthPosts} />
+      </section>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .page-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 28px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--mint);
+  }
+
+  .month-section {
+    margin-bottom: 32px;
+  }
+
+  .month-heading {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--mint-deep);
+    margin-bottom: 10px;
+    padding: 4px 10px;
+    background: var(--mint);
+    border-radius: var(--radius);
+    display: inline-block;
+  }
+</style>

@@ -1,0 +1,80 @@
+---
+// アーカイブトップ（年一覧）ページ
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { groupPostsByYear, collectTags } from '@/lib/posts';
+
+const allPosts = await getCollection('posts');
+const yearGroups = groupPostsByYear(allPosts);
+const years = yearGroups.map(({ year }) => year);
+const tags = collectTags(allPosts);
+
+import TagList from '@/components/TagList.astro';
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="アーカイブ">
+  <Fragment slot="sidebar">
+    <TagList tags={tags} />
+    <ArchiveNav years={years} />
+  </Fragment>
+
+  <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    <h1 class="page-heading">年別アーカイブ</h1>
+
+    <ul class="year-list">
+      {yearGroups.map(({ year, posts }) => (
+        <li class="year-item">
+          <a href={`${base}archive/${year}/`} class="year-link" data-astro-prefetch>
+            {year}年
+            <span class="year-count">{posts.length}件</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Layout>
+
+<style>
+  .page-heading {
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin-bottom: 24px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid var(--mint);
+  }
+
+  .year-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .year-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: border-color 0.1s, background 0.1s;
+  }
+
+  .year-link:hover {
+    border-color: var(--mint-deep);
+    background: var(--mint);
+    color: var(--mint-deep);
+  }
+
+  .year-count {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+</style>
