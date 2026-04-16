@@ -70,8 +70,8 @@ const isActive = (href: string): boolean => {
 
   nav {
     display: flex;
-    background: var(--white);
-    border-bottom: 2px solid var(--mint);
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
     padding: 0 40px;
     gap: 0;
     overflow-x: auto;
@@ -92,21 +92,21 @@ const isActive = (href: string): boolean => {
   }
 
   nav a:hover {
-    color: var(--mint-deep);
-    border-bottom-color: var(--mint);
+    color: var(--accent);
+    border-bottom-color: var(--accent-light);
   }
 
   nav a.active {
-    color: var(--mint-deep);
-    border-bottom-color: var(--mint-deep);
+    color: var(--accent);
+    border-bottom-color: var(--accent);
     font-weight: 700;
   }
 
   /* ===== モバイル: トグルボタン表示・navは開閉 ===== */
   @media (max-width: 600px) {
     .nav-wrapper {
-      background: var(--white);
-      border-bottom: 2px solid var(--mint);
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
     }
 
     .nav-toggle {
@@ -117,7 +117,7 @@ const isActive = (href: string): boolean => {
       padding: 11px 16px;
       font-size: 0.83rem;
       font-weight: 700;
-      color: var(--mint-deep);
+      color: var(--accent);
       background: none;
       border: none;
       cursor: pointer;

@@ -1,10 +1,7 @@
 ---
-// 個別記事ページレイアウト
+// 個別記事ページレイアウト（カラム集中型・サイドバーなし）
 import Layout from './Layout.astro';
-import TagList from '@/components/TagList.astro';
-import ArchiveNav from '@/components/ArchiveNav.astro';
-import { formatDateDisplay, buildPostUrl, resolveTitle, collectTags, groupPostsByYear, sortPostsByDateDesc } from '@/lib/posts';
-import { getCollection } from 'astro:content';
+import { formatDateDisplay, buildPostUrl, resolveTitle } from '@/lib/posts';
 import type { CollectionEntry } from 'astro:content';
 
 interface Props {
@@ -15,23 +12,13 @@ interface Props {
 
 const { post, prevPost, nextPost } = Astro.props;
 
-// サイドバー用データ
-const allPosts = await getCollection('posts');
-const tags = collectTags(allPosts);
-const years = groupPostsByYear(allPosts).map(({ year }) => year);
-
 const base = import.meta.env.BASE_URL;
 const title = resolveTitle(post);
 const dateDisplay = formatDateDisplay(post.data.date);
 ---
 
 <Layout title={title} ogType="article">
-  <Fragment slot="sidebar">
-    <TagList tags={tags} />
-    <ArchiveNav years={years} />
-  </Fragment>
-
-  <article class="container post-article">
+  <article class="post-article">
     <header class="post-header">
       <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
       <h1 class="post-title">{title}</h1>
@@ -72,28 +59,30 @@ const dateDisplay = formatDateDisplay(post.data.date);
 
 <style>
   .post-article {
-    padding-top: 32px;
-    padding-bottom: 60px;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
   }
 
   .post-header {
-    margin-bottom: 28px;
+    margin-bottom: 32px;
     padding-bottom: 20px;
-    border-bottom: 2px solid var(--mint);
+    border-bottom: 1px solid var(--accent);
   }
 
   .post-date {
     display: block;
     font-size: 0.78rem;
     color: var(--text-muted);
-    margin-bottom: 8px;
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
   }
 
   .post-title {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     font-weight: 700;
-    line-height: 1.4;
-    margin-bottom: 10px;
+    line-height: 1.5;
+    margin-bottom: 12px;
   }
 
   .post-tags {
@@ -101,20 +90,20 @@ const dateDisplay = formatDateDisplay(post.data.date);
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 10px;
+    margin-top: 12px;
   }
 
   .post-tags a {
     font-size: 0.72rem;
-    color: var(--mint-deep);
-    background: var(--mint);
+    color: var(--accent-dark);
+    background: var(--accent-light);
     padding: 2px 10px;
     border-radius: 20px;
     text-decoration: none;
   }
 
   .post-tags a:hover {
-    background: var(--mint-deep);
+    background: var(--accent);
     color: var(--white);
   }
 
@@ -122,16 +111,17 @@ const dateDisplay = formatDateDisplay(post.data.date);
     display: flex;
     justify-content: space-between;
     gap: 16px;
-    margin-top: 48px;
+    margin-top: 56px;
     padding-top: 24px;
     border-top: 1px solid var(--border);
   }
 
   .post-nav a {
     font-size: 0.83rem;
-    color: var(--mint-deep);
+    color: var(--accent);
     text-decoration: none;
     max-width: 45%;
+    line-height: 1.6;
   }
 
   .post-nav a:hover {

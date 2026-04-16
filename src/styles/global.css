@@ -5,39 +5,35 @@
   padding: 0;
 }
 
-/* ===== CSS変数（DLBと統一したパステルパレット） ===== */
+/* ===== CSS変数（紙と活字：クリーム×テラコッタ×明朝） ===== */
 :root {
   --white: #ffffff;
-  --bg: #fafafa;
+  --bg: #f5f0e8;
   --text: #2c2c2c;
   --text-muted: #888888;
 
-  --mint:          #b8f0d8;
-  --mint-deep:     #3dba7a;
-  --sky:           #b8e4f9;
-  --sky-deep:      #3a9fd6;
-  --lavender:      #dbbef9;
-  --lavender-deep: #9b59e8;
-  --peach:         #ffd6b8;
-  --peach-deep:    #e8834a;
-  --yellow:        #fff0a0;
-  --yellow-deep:   #c8a800;
+  --accent:       #c17f5a;
+  --accent-dark:  #a0633d;
+  --accent-light: #f0ddd1;
 
-  --border: #e8e8e8;
-  --radius: 12px;
+  --border: #ddd8ce;
+  --radius: 8px;
+
+  --font-mincho: "游明朝", "Yu Mincho", "Hiragino Mincho ProN",
+                 "HiraMinProN-W3", "ヒラギノ明朝 ProN", serif;
 }
 
 /* ===== ベース ===== */
 body {
-  font-family: system-ui, -apple-system, sans-serif;
+  font-family: var(--font-mincho);
   background: var(--bg);
   color: var(--text);
-  line-height: 1.8;
-  font-size: 15px;
+  line-height: 2.0;
+  font-size: 17px;
 }
 
 a {
-  color: var(--sky-deep);
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -60,18 +56,18 @@ img {
 }
 
 .post-content a {
-  color: var(--sky-deep);
+  color: var(--accent);
   text-decoration: underline;
 }
 
 .post-content blockquote {
-  border-left: 3px solid var(--mint-deep);
+  border-left: 2px solid var(--accent);
   padding: 0.5em 1em;
   margin: 1em 0;
-  background: var(--mint);
+  background: var(--accent-light);
   border-radius: 0 var(--radius) var(--radius) 0;
   color: var(--text-muted);
-  font-size: 0.9em;
+  font-size: 0.95em;
 }
 
 /* ===== ユーティリティ ===== */
