@@ -43,7 +43,7 @@ const base = import.meta.env.BASE_URL;
     font-weight: 700;
     margin-bottom: 24px;
     padding-bottom: 10px;
-    border-bottom: 2px solid var(--mint);
+    border-bottom: 1px solid var(--accent);
   }
 
   .empty {
@@ -62,7 +62,7 @@ const base = import.meta.env.BASE_URL;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: var(--white);
+    background: var(--bg);
     border: 1px solid var(--border);
     border-radius: var(--radius);
     padding: 8px 14px;
@@ -71,14 +71,14 @@ const base = import.meta.env.BASE_URL;
   }
 
   .tag-grid a:hover {
-    border-color: var(--mint-deep);
-    background: var(--mint);
+    border-color: var(--accent);
+    background: var(--accent-light);
   }
 
   .tag-name {
     font-size: 0.9rem;
     font-weight: 600;
-    color: var(--mint-deep);
+    color: var(--accent);
   }
 
   .tag-count {
