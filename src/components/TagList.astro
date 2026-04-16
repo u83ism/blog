@@ -1,0 +1,70 @@
+---
+// タグ一覧サイドバーコンポーネント
+interface Props {
+  tags: { tag: string; count: number }[];
+}
+
+const { tags } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<section class="sidebar-section">
+  <h2 class="sidebar-heading">タグ</h2>
+  <ul class="tag-list">
+    {tags.map(({ tag, count }) => (
+      <li>
+        <a href={`${base}tags/${encodeURIComponent(tag)}/`}>
+          #{tag}
+          <span class="tag-count">{count}</span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .sidebar-section {
+    margin-bottom: 28px;
+  }
+
+  .sidebar-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .tag-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .tag-list a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.83rem;
+    color: var(--text);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    transition: background 0.1s;
+  }
+
+  .tag-list a:hover {
+    background: var(--mint);
+    color: var(--mint-deep);
+  }
+
+  .tag-count {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--border);
+    padding: 1px 6px;
+    border-radius: 20px;
+  }
+</style>

@@ -1,0 +1,94 @@
+/* ===== リセット ===== */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== CSS変数（DLBと統一したパステルパレット） ===== */
+:root {
+  --white: #ffffff;
+  --bg: #fafafa;
+  --text: #2c2c2c;
+  --text-muted: #888888;
+
+  --mint:          #b8f0d8;
+  --mint-deep:     #3dba7a;
+  --sky:           #b8e4f9;
+  --sky-deep:      #3a9fd6;
+  --lavender:      #dbbef9;
+  --lavender-deep: #9b59e8;
+  --peach:         #ffd6b8;
+  --peach-deep:    #e8834a;
+  --yellow:        #fff0a0;
+  --yellow-deep:   #c8a800;
+
+  --border: #e8e8e8;
+  --radius: 12px;
+}
+
+/* ===== ベース ===== */
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.8;
+  font-size: 15px;
+}
+
+a {
+  color: var(--sky-deep);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== 記事本文のMarkdown要素 ===== */
+.post-content p {
+  margin-bottom: 1em;
+}
+
+.post-content p:last-child {
+  margin-bottom: 0;
+}
+
+.post-content a {
+  color: var(--sky-deep);
+  text-decoration: underline;
+}
+
+.post-content blockquote {
+  border-left: 3px solid var(--mint-deep);
+  padding: 0.5em 1em;
+  margin: 1em 0;
+  background: var(--mint);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+/* ===== ユーティリティ ===== */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.container {
+  max-width: 840px;
+  margin: 0 auto;
+  padding: 0 24px;
+}

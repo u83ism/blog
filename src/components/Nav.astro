@@ -1,0 +1,152 @@
+---
+// グローバルナビゲーション
+interface Props {
+  currentPath: string;
+}
+
+const { currentPath } = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+
+// ナビゲーションリンクの定義
+const navLinks = [
+  { href: base, label: 'HOME' },
+  { href: `${base}tags/`, label: 'タグ一覧' },
+  { href: `${base}archive/`, label: 'アーカイブ' },
+  { href: 'https://u83-portal.web.app/', label: '🔗 ゆうやみポータル', external: true },
+];
+
+// パスが一致するかどうかを判定する
+const isActive = (href: string): boolean => {
+  if (href === base) return currentPath === base || currentPath === base.slice(0, -1);
+  return currentPath.startsWith(href);
+};
+---
+
+<div class="nav-wrapper">
+  <!-- モバイル用トグルボタン -->
+  <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="メニューを開く">
+    <span class="nav-toggle-label">メニュー</span>
+    <span class="nav-toggle-icon" aria-hidden="true">▾</span>
+  </button>
+
+  <nav id="main-nav" aria-label="グローバルナビゲーション">
+    {navLinks.map(({ href, label, external }) => (
+      external
+        ? <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
+        : <a href={href} class={isActive(href) ? 'active' : undefined} aria-current={isActive(href) ? 'page' : undefined} data-astro-prefetch>{label}</a>
+    ))}
+  </nav>
+</div>
+
+<script>
+  // モバイル用ナビゲーショントグルを初期化する
+  function initNavToggle(): void {
+    const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+    const nav = document.querySelector<HTMLElement>('#main-nav');
+    const icon = document.querySelector<HTMLElement>('.nav-toggle-icon');
+
+    // ナビを閉じた状態にリセットする（別ページへ遷移した際の開きっぱなしを防ぐ）
+    toggle?.setAttribute('aria-expanded', 'false');
+    nav?.classList.remove('open');
+    if (icon) icon.textContent = '▾';
+
+    toggle?.addEventListener('click', () => {
+      const expanded = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!expanded));
+      nav?.classList.toggle('open');
+      if (icon) icon.textContent = !expanded ? '▴' : '▾';
+    });
+  }
+
+  document.addEventListener('astro:page-load', initNavToggle);
+</script>
+
+<style>
+  /* ===== デフォルト（デスクトップ）: トグルボタン非表示・navを常時表示 ===== */
+  .nav-toggle {
+    display: none;
+  }
+
+  nav {
+    display: flex;
+    background: var(--white);
+    border-bottom: 2px solid var(--mint);
+    padding: 0 40px;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  nav a {
+    display: block;
+    color: var(--text-muted);
+    text-decoration: none;
+    padding: 12px 18px;
+    font-size: 0.83rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.15s, border-color 0.15s;
+  }
+
+  nav a:hover {
+    color: var(--mint-deep);
+    border-bottom-color: var(--mint);
+  }
+
+  nav a.active {
+    color: var(--mint-deep);
+    border-bottom-color: var(--mint-deep);
+    font-weight: 700;
+  }
+
+  /* ===== モバイル: トグルボタン表示・navは開閉 ===== */
+  @media (max-width: 600px) {
+    .nav-wrapper {
+      background: var(--white);
+      border-bottom: 2px solid var(--mint);
+    }
+
+    .nav-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 11px 16px;
+      font-size: 0.83rem;
+      font-weight: 700;
+      color: var(--mint-deep);
+      background: none;
+      border: none;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .nav-toggle-icon {
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    nav {
+      display: none;
+      flex-direction: column;
+      border-bottom: none;
+      padding: 0;
+      overflow-x: visible;
+    }
+
+    nav.open {
+      display: flex;
+    }
+
+    nav a {
+      padding: 11px 16px;
+      font-size: 0.83rem;
+      border-bottom: none;
+      border-top: 1px solid var(--border);
+      margin-bottom: 0;
+    }
+  }
+</style>

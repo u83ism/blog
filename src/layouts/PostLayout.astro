@@ -1,0 +1,144 @@
+---
+// 個別記事ページレイアウト
+import Layout from './Layout.astro';
+import TagList from '@/components/TagList.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { formatDateDisplay, buildPostUrl, resolveTitle, collectTags, groupPostsByYear, sortPostsByDateDesc } from '@/lib/posts';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  post: CollectionEntry<'posts'>;
+  prevPost?: CollectionEntry<'posts'>;
+  nextPost?: CollectionEntry<'posts'>;
+}
+
+const { post, prevPost, nextPost } = Astro.props;
+
+// サイドバー用データ
+const allPosts = await getCollection('posts');
+const tags = collectTags(allPosts);
+const years = groupPostsByYear(allPosts).map(({ year }) => year);
+
+const base = import.meta.env.BASE_URL;
+const title = resolveTitle(post);
+const dateDisplay = formatDateDisplay(post.data.date);
+---
+
+<Layout title={title}>
+  <Fragment slot="sidebar">
+    <TagList tags={tags} />
+    <ArchiveNav years={years} />
+  </Fragment>
+
+  <article class="container post-article">
+    <header class="post-header">
+      <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
+      <h1 class="post-title">{title}</h1>
+      {post.data.tags.length > 0 && (
+        <ul class="post-tags" aria-label="タグ">
+          {post.data.tags.map((tag) => (
+            <li>
+              <a href={`${base}tags/${encodeURIComponent(tag)}/`}>#{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    <div class="post-content">
+      <slot />
+    </div>
+
+    <!-- 前後記事ナビゲーション -->
+    <nav class="post-nav" aria-label="前後の記事">
+      <div class="post-nav-prev">
+        {nextPost && (
+          <a href={buildPostUrl(base, nextPost.id)} data-astro-prefetch>
+            ← {resolveTitle(nextPost)}
+          </a>
+        )}
+      </div>
+      <div class="post-nav-next">
+        {prevPost && (
+          <a href={buildPostUrl(base, prevPost.id)} data-astro-prefetch>
+            {resolveTitle(prevPost)} →
+          </a>
+        )}
+      </div>
+    </nav>
+  </article>
+</Layout>
+
+<style>
+  .post-article {
+    padding-top: 32px;
+    padding-bottom: 60px;
+  }
+
+  .post-header {
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--mint);
+  }
+
+  .post-date {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .post-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+
+  .post-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  .post-tags a {
+    font-size: 0.72rem;
+    color: var(--mint-deep);
+    background: var(--mint);
+    padding: 2px 10px;
+    border-radius: 20px;
+    text-decoration: none;
+  }
+
+  .post-tags a:hover {
+    background: var(--mint-deep);
+    color: var(--white);
+  }
+
+  .post-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .post-nav a {
+    font-size: 0.83rem;
+    color: var(--mint-deep);
+    text-decoration: none;
+    max-width: 45%;
+  }
+
+  .post-nav a:hover {
+    text-decoration: underline;
+  }
+
+  .post-nav-next {
+    text-align: right;
+  }
+</style>

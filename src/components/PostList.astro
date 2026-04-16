@@ -1,0 +1,103 @@
+---
+// 記事一覧コンポーネント
+import type { CollectionEntry } from 'astro:content';
+import { resolveTitle, formatDateDisplay, buildPostUrl } from '@/lib/posts';
+
+interface Props {
+  posts: CollectionEntry<'posts'>[];
+}
+
+const { posts } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<ul class="post-list">
+  {posts.map((post) => (
+    <li class="post-item">
+      <time class="post-date" datetime={post.data.date.toISOString()}>
+        {formatDateDisplay(post.data.date)}
+      </time>
+      <a class="post-title" href={buildPostUrl(base, post.id)} data-astro-prefetch>
+        {resolveTitle(post)}
+      </a>
+      {post.data.tags.length > 0 && (
+        <ul class="post-tags" aria-label="タグ">
+          {post.data.tags.map((tag) => (
+            <li>
+              <a href={`${base}tags/${encodeURIComponent(tag)}/`}>#{tag}</a>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
+  ))}
+</ul>
+
+<style>
+  .post-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .post-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    grid-template-rows: auto auto;
+    gap: 4px 12px;
+    align-items: baseline;
+  }
+
+  .post-date {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+  }
+
+  .post-title {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .post-title:hover {
+    color: var(--mint-deep);
+    text-decoration: underline;
+  }
+
+  .post-tags {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    grid-column: 2;
+  }
+
+  .post-tags a {
+    font-size: 0.72rem;
+    color: var(--mint-deep);
+    background: var(--mint);
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-decoration: none;
+  }
+
+  .post-tags a:hover {
+    background: var(--mint-deep);
+    color: var(--white);
+  }
+
+  @media (max-width: 600px) {
+    .post-item {
+      grid-template-columns: 1fr;
+    }
+
+    .post-tags {
+      grid-column: 1;
+    }
+  }
+</style>

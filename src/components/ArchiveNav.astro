@@ -1,0 +1,70 @@
+---
+// 年別アーカイブナビゲーションサイドバーコンポーネント
+interface Props {
+  years: number[];
+  currentYear?: number;
+}
+
+const { years, currentYear } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<section class="sidebar-section">
+  <h2 class="sidebar-heading">アーカイブ</h2>
+  <ul class="archive-list">
+    {years.map((year) => (
+      <li>
+        <a
+          href={`${base}archive/${year}/`}
+          class={year === currentYear ? 'active' : undefined}
+          aria-current={year === currentYear ? 'page' : undefined}
+        >
+          {year}年
+        </a>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .sidebar-section {
+    margin-bottom: 28px;
+  }
+
+  .sidebar-heading {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+  }
+
+  .archive-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .archive-list a {
+    display: block;
+    font-size: 0.83rem;
+    color: var(--text);
+    text-decoration: none;
+    padding: 4px 8px;
+    border-radius: var(--radius);
+    transition: background 0.1s;
+  }
+
+  .archive-list a:hover {
+    background: var(--mint);
+    color: var(--mint-deep);
+  }
+
+  .archive-list a.active {
+    background: var(--mint);
+    color: var(--mint-deep);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,78 @@
+---
+// サイトヘッダー
+---
+
+<header>
+  <div class="header-accent-bar" aria-hidden="true"></div>
+  <div class="header-body">
+    <div>
+      <a class="site-title" href={import.meta.env.BASE_URL}>u83 <em>said so.</em></a>
+    </div>
+    <div class="header-meta">
+      雑記ブログ &nbsp;/&nbsp; 管理人：ゆうやみ &nbsp;/&nbsp; since 2000
+    </div>
+  </div>
+</header>
+
+<style>
+  header {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  .header-accent-bar {
+    width: 6px;
+    background: linear-gradient(to bottom, var(--mint-deep), var(--sky-deep), var(--lavender-deep));
+    margin-right: 28px;
+    flex-shrink: 0;
+  }
+
+  .header-body {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    padding: 20px 0;
+  }
+
+  .site-title {
+    font-size: 1.7rem;
+    font-weight: 900;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .site-title em {
+    font-style: normal;
+    color: var(--mint-deep);
+  }
+
+  .header-meta {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  @media (max-width: 600px) {
+    header {
+      padding: 0 16px;
+    }
+
+    .header-body {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      padding: 16px 0;
+    }
+
+    .site-title {
+      font-size: 1.3rem;
+    }
+  }
+</style>
