@@ -2,7 +2,7 @@
 // アーカイブトップ（年一覧）ページ
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
-import ArchiveNav from '@/components/ArchiveNav.astro';
+import Sidebar from '@/components/Sidebar.astro';
 import { groupPostsByYear, collectTags } from '@/lib/posts';
 
 const allPosts = await getCollection('posts');
@@ -10,14 +10,12 @@ const yearGroups = groupPostsByYear(allPosts);
 const years = yearGroups.map(({ year }) => year);
 const tags = collectTags(allPosts);
 
-import TagList from '@/components/TagList.astro';
 const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="アーカイブ">
   <Fragment slot="sidebar">
-    <TagList tags={tags} />
-    <ArchiveNav years={years} />
+    <Sidebar tags={tags} years={years} />
   </Fragment>
 
   <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
