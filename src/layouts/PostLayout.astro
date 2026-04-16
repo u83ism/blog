@@ -25,7 +25,7 @@ const title = resolveTitle(post);
 const dateDisplay = formatDateDisplay(post.data.date);
 ---
 
-<Layout title={title}>
+<Layout title={title} ogType="article">
   <Fragment slot="sidebar">
     <TagList tags={tags} />
     <ArchiveNav years={years} />

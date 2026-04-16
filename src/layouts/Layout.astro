@@ -9,12 +9,21 @@ import '@/styles/global.css';
 interface Props {
   title: string;
   description?: string;
+  /** OGタイプ（article ページでは "article" を渡す） */
+  ogType?: 'website' | 'article';
+  /** OG画像の絶対URL（未指定時はデフォルト画像なし） */
+  ogImage?: string;
 }
 
 const {
   title,
   description = '2000年代から続くゆうやみの個人雑記ブログ。',
+  ogType = 'website',
+  ogImage,
 } = Astro.props;
+
+// Twitter Card タイプ：画像があれば大カード、なければ通常カード
+const twitterCard = ogImage ? 'summary_large_image' : 'summary';
 
 // 現在のパスを取得する
 const currentPath = Astro.url.pathname;
@@ -36,12 +45,19 @@ const pageTitle = title ? `${title} | u83 said so.` : 'u83 said so.';
     <link rel="canonical" href={canonicalUrl} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonicalUrl} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:site_name" content="u83 said so." />
     <meta property="og:locale" content="ja_JP" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
 
     <ClientRouter />
   </head>
