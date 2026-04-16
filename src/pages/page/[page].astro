@@ -4,8 +4,7 @@ import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import Pagination from '@/components/Pagination.astro';
-import Sidebar from '@/components/Sidebar.astro';
-import { sortPostsByDateDesc, collectTags, groupPostsByYear } from '@/lib/posts';
+import { sortPostsByDateDesc } from '@/lib/posts';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
@@ -34,19 +33,9 @@ interface Props {
 }
 
 const { posts, pageNum, totalPages } = Astro.props;
-
-// サイドバー用データ
-const allPosts = await getCollection('posts');
-const tags = collectTags(allPosts);
-const years = groupPostsByYear(allPosts).map(({ year }) => year);
-
 ---
 
 <Layout title={`記事一覧 ${pageNum}ページ目`}>
-  <Fragment slot="sidebar">
-    <Sidebar tags={tags} years={years} />
-  </Fragment>
-
   <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
     <h1 class="page-heading">記事一覧（{pageNum} / {totalPages} ページ）</h1>
 
@@ -55,4 +44,3 @@ const years = groupPostsByYear(allPosts).map(({ year }) => year);
     <Pagination pageNum={pageNum} totalPages={totalPages} />
   </div>
 </Layout>
-

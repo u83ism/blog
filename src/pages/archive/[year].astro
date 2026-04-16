@@ -3,8 +3,8 @@
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
-import Sidebar from '@/components/Sidebar.astro';
-import { groupPostsByYear, groupPostsByMonth, collectTags } from '@/lib/posts';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { groupPostsByYear, groupPostsByMonth } from '@/lib/posts';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
@@ -25,7 +25,6 @@ const { year, posts } = Astro.props;
 
 // サイドバー用データ
 const allPosts = await getCollection('posts');
-const tags = collectTags(allPosts);
 const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
 
 // 月別グループ化
@@ -36,7 +35,7 @@ const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8�
 
 <Layout title={`${year}年のアーカイブ`}>
   <Fragment slot="sidebar">
-    <Sidebar tags={tags} years={sortedYears} currentYear={year} />
+    <ArchiveNav years={sortedYears} currentYear={year} />
   </Fragment>
 
   <div class="container" style="padding-top: 32px; padding-bottom: 48px;">

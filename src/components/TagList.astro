@@ -2,9 +2,10 @@
 // タグ一覧サイドバーコンポーネント
 interface Props {
   tags: { tag: string; count: number }[];
+  currentTag?: string;
 }
 
-const { tags } = Astro.props;
+const { tags, currentTag } = Astro.props;
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -13,7 +14,11 @@ const base = import.meta.env.BASE_URL;
   <ul class="tag-list">
     {tags.map(({ tag, count }) => (
       <li>
-        <a href={`${base}tags/${encodeURIComponent(tag)}/`}>
+        <a
+          href={`${base}tags/${encodeURIComponent(tag)}/`}
+          class={tag === currentTag ? 'active' : undefined}
+          aria-current={tag === currentTag ? 'page' : undefined}
+        >
           #{tag}
           <span class="tag-count">{count}</span>
         </a>
@@ -45,6 +50,12 @@ const base = import.meta.env.BASE_URL;
   .tag-list a:hover {
     background: var(--accent-light);
     color: var(--accent);
+  }
+
+  .tag-list a.active {
+    background: var(--accent-light);
+    color: var(--accent);
+    font-weight: 700;
   }
 
   .tag-count {

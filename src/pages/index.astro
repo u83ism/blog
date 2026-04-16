@@ -4,8 +4,7 @@ import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import Pagination from '@/components/Pagination.astro';
-import Sidebar from '@/components/Sidebar.astro';
-import { sortPostsByDateDesc, collectTags, groupPostsByYear } from '@/lib/posts';
+import { sortPostsByDateDesc } from '@/lib/posts';
 
 // 全記事を取得・ソート
 const allPosts = await getCollection('posts');
@@ -16,18 +15,9 @@ const PAGE_SIZE = 20;
 const page = 1;
 const totalPages = Math.ceil(sortedPosts.length / PAGE_SIZE);
 const posts = sortedPosts.slice(0, PAGE_SIZE);
-
-// サイドバー用データ
-const tags = collectTags(allPosts);
-const years = groupPostsByYear(allPosts).map(({ year }) => year);
-
 ---
 
 <Layout title="記事一覧">
-  <Fragment slot="sidebar">
-    <Sidebar tags={tags} years={years} />
-  </Fragment>
-
   <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
     <h1 class="page-heading">最近の記事</h1>
 
@@ -39,4 +29,3 @@ const years = groupPostsByYear(allPosts).map(({ year }) => year);
     )}
   </div>
 </Layout>
-

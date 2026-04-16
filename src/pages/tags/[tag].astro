@@ -3,8 +3,8 @@
 import { getCollection } from 'astro:content';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
-import ArchiveNav from '@/components/ArchiveNav.astro';
-import { sortPostsByDateDesc, groupPostsByYear } from '@/lib/posts';
+import TagList from '@/components/TagList.astro';
+import { sortPostsByDateDesc, collectTags } from '@/lib/posts';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
@@ -36,12 +36,12 @@ const { tag, posts } = Astro.props;
 
 // サイドバー用データ
 const allPosts = await getCollection('posts');
-const years = groupPostsByYear(allPosts).map(({ year }) => year);
+const tags = collectTags(allPosts);
 ---
 
 <Layout title={`#${tag} の記事`}>
   <Fragment slot="sidebar">
-    <ArchiveNav years={years} />
+    <TagList tags={tags} currentTag={tag} />
   </Fragment>
 
   <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
