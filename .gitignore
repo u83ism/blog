@@ -1,0 +1,20 @@
+# ひとまず画像もGitHubにあげるのでコメントアウト
+# *.gif
+# *.jpg
+# *.png
+# *.ico
+
+settings.local.json
+
+# 依存関係
+node_modules/
+
+# ビルド成果物
+dist/
+
+# Astro生成ファイル
+.astro/
+
+# OS・エディタ
+.DS_Store
+Thumbs.db
