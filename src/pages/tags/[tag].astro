@@ -55,12 +55,9 @@ const years = groupPostsByYear(allPosts).map(({ year }) => year);
 </Layout>
 
 <style>
+  /* globalの.page-headingを上書き：タグページ固有スタイル */
   .page-heading {
-    font-size: 1.2rem;
-    font-weight: 700;
-    margin-bottom: 24px;
-    padding-bottom: 10px;
-    border-bottom: 2px solid var(--accent);
+    border-bottom-width: 2px;
     display: flex;
     align-items: baseline;
     gap: 10px;

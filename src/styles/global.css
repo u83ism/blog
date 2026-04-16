@@ -70,6 +70,16 @@ img {
   font-size: 0.95em;
 }
 
+/* ===== ページ見出し ===== */
+.page-heading {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 24px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--accent);
+  color: var(--text);
+}
+
 /* ===== サイドバー共通 ===== */
 .sidebar-section {
   margin-bottom: 28px;

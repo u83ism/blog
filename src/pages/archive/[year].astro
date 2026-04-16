@@ -5,7 +5,7 @@ import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import TagList from '@/components/TagList.astro';
 import ArchiveNav from '@/components/ArchiveNav.astro';
-import { sortPostsByDateDesc, groupPostsByYear, groupPostsByMonth, collectTags } from '@/lib/posts';
+import { groupPostsByYear, groupPostsByMonth, collectTags } from '@/lib/posts';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
@@ -54,12 +54,9 @@ const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8�
 </Layout>
 
 <style>
+  /* globalの.page-headingを上書き：年別アーカイブは余白を広めに */
   .page-heading {
-    font-size: 1.2rem;
-    font-weight: 700;
     margin-bottom: 28px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--accent);
   }
 
   .month-section {
