@@ -4,7 +4,9 @@
  */
 export const TAGS = [
   'ゲーム',
+  'ラグナロクオンライン',
   '音ゲー',
+  'モンスターコレクションTCG',
   'プロレス',
   'アニメ',
   '日常',
@@ -13,6 +15,9 @@ export const TAGS = [
   '音楽',
   '創作',
   '読書',
+  '漫画',
+  '大藪春彦',
+  'バトルロワイアル',
 ] as const;
 
 export type Tag = typeof TAGS[number];
