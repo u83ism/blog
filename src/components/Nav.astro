@@ -1,5 +1,7 @@
 ---
 // グローバルナビゲーション
+import SearchDialog from '@/components/SearchDialog.astro';
+
 interface Props {
   currentPath: string;
 }
@@ -23,7 +25,7 @@ const isActive = (href: string): boolean => {
 };
 ---
 
-<div class="nav-wrapper">
+<div class="nav-wrapper" data-pagefind-ignore>
   <!-- モバイル用トグルボタン -->
   <button class="nav-toggle" aria-expanded="false" aria-controls="main-nav" aria-label="メニューを開く">
     <span class="nav-toggle-label">メニュー</span>
@@ -31,13 +33,17 @@ const isActive = (href: string): boolean => {
   </button>
 
   <nav id="main-nav" aria-label="グローバルナビゲーション">
-    {navLinks.map(({ href, label, external }) => (
-      external
-        ? <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
-        : <a href={href} class={isActive(href) ? 'active' : undefined} aria-current={isActive(href) ? 'page' : undefined} data-astro-prefetch>{label}</a>
+    {navLinks.filter(({ external }) => !external).map(({ href, label }) => (
+      <a href={href} class={isActive(href) ? 'active' : undefined} aria-current={isActive(href) ? 'page' : undefined} data-astro-prefetch>{label}</a>
+    ))}
+    <button id="search-open" class="search-nav-btn" aria-label="検索を開く">検索</button>
+    {navLinks.filter(({ external }) => external).map(({ href, label }) => (
+      <a href={href} target="_blank" rel="noopener noreferrer">{label}</a>
     ))}
   </nav>
 </div>
+
+<SearchDialog />
 
 <script>
   // モバイル用ナビゲーショントグルを初期化する
@@ -77,7 +83,8 @@ const isActive = (href: string): boolean => {
     overflow-x: auto;
   }
 
-  nav a {
+  nav a,
+  .search-nav-btn {
     display: block;
     color: var(--text-muted);
     text-decoration: none;
@@ -91,7 +98,16 @@ const isActive = (href: string): boolean => {
     transition: color 0.15s, border-color 0.15s;
   }
 
-  nav a:hover {
+  .search-nav-btn {
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  nav a:hover,
+  .search-nav-btn:hover {
     color: var(--accent);
     border-bottom-color: var(--accent-light);
   }
@@ -141,12 +157,15 @@ const isActive = (href: string): boolean => {
       display: flex;
     }
 
-    nav a {
+    nav a,
+    .search-nav-btn {
       padding: 11px 16px;
       font-size: 0.83rem;
       border-bottom: none;
       border-top: 1px solid var(--border);
       margin-bottom: 0;
+      text-align: left;
+      width: 100%;
     }
   }
 </style>

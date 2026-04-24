@@ -1,0 +1,184 @@
+---
+// 全文検索ダイアログ（Pagefind）
+---
+
+<dialog class="search-dialog" id="search-dialog" aria-label="全文検索">
+  <div class="search-inner">
+    <div class="search-header">
+      <span class="search-title">全文検索</span>
+      <button class="search-close" id="search-close" aria-label="閉じる">✕</button>
+    </div>
+    <div id="search-widget"></div>
+    <p class="search-hint">うまく引っかからない場合は、検索ワードを短くしてみてください</p>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ base: import.meta.env.BASE_URL }}>
+  // is:inlineはViteの処理をバイパスするため動的importが正しく動作する
+
+  async function loadAndOpen(dialog) {
+    const widget = document.getElementById('search-widget');
+    if (!widget) return;
+
+    if (!widget.dataset.initialized) {
+      // Pagefind UIのCSSを動的に読み込む（二重読み込みを防ぐ）
+      const cssHref = base + 'pagefind/pagefind-ui.css';
+      if (!document.querySelector('link[href="' + cssHref + '"]')) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = cssHref;
+        document.head.appendChild(link);
+      }
+
+      try {
+        console.log('[search] import前 base=', base);
+        await import(base + 'pagefind/pagefind-ui.js');
+        console.log('[search] import完了 window.PagefindUI=', window.PagefindUI);
+        const PagefindUI = window.PagefindUI;
+        if (!PagefindUI) throw new Error('PagefindUI not found');
+        new PagefindUI({
+          element: '#search-widget',
+          bundlePath: base + 'pagefind/',
+          showImages: false,
+        });
+        console.log('[search] PagefindUI初期化完了');
+        widget.dataset.initialized = 'true';
+      } catch (err) {
+        console.error('[search] エラー:', err);
+        widget.innerHTML = '<p class="search-unavailable">開発環境では検索は利用できません。<br><code>npm run build &amp;&amp; npm run preview</code> で確認してください。</p>';
+        widget.dataset.initialized = 'error';
+      }
+    }
+
+    dialog.showModal();
+    // Pagefind UIのレンダリング完了後に入力欄へフォーカスを移す
+    requestAnimationFrame(function () {
+      var input = dialog.querySelector('input');
+      if (input) input.focus();
+    });
+  }
+
+  function initSearchDialog() {
+    const dialog = document.getElementById('search-dialog');
+    const closeBtn = document.getElementById('search-close');
+    const openBtn = document.getElementById('search-open');
+    if (!dialog) return;
+
+    // ✕ボタンとEscキー（dialogのデフォルト動作）のみで閉じる
+    if (closeBtn) closeBtn.addEventListener('click', function () { dialog.close(); });
+    if (openBtn) openBtn.addEventListener('click', function () { loadAndOpen(dialog); });
+  }
+
+  // is:inlineはページ遷移ごとに実行されるためリスナーの重複登録を防ぐ
+  if (!window.__searchListenerAdded) {
+    document.addEventListener('astro:page-load', initSearchDialog);
+    window.__searchListenerAdded = true;
+  }
+</script>
+
+<style>
+  .search-dialog {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    width: min(600px, calc(100vw - 32px));
+    max-height: 80vh;
+    padding: 0;
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+    overflow: hidden;
+  }
+
+  .search-dialog[open] {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .search-dialog::backdrop {
+    background: rgba(44, 44, 44, 0.45);
+    backdrop-filter: blur(2px);
+  }
+
+  .search-inner {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+  }
+
+  .search-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .search-title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+  }
+
+  .search-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    line-height: 1;
+    border-radius: 4px;
+    font-family: inherit;
+  }
+
+  .search-close:hover {
+    color: var(--text);
+    background: var(--bg);
+  }
+
+  /* Pagefind UIのCSS変数をサイトのデザインで上書きする */
+  #search-widget {
+    padding: 20px;
+    overflow-y: auto;
+    flex: 1;
+
+    --pagefind-ui-scale: 0.85;
+    --pagefind-ui-primary: var(--accent);
+    --pagefind-ui-text: var(--text);
+    --pagefind-ui-background: var(--white);
+    --pagefind-ui-border: var(--border);
+    --pagefind-ui-tag: var(--bg);
+    --pagefind-ui-border-width: 1px;
+    --pagefind-ui-border-radius: 4px;
+    --pagefind-ui-image-border-radius: 4px;
+    --pagefind-ui-font: var(--font-mincho);
+  }
+
+  .search-hint {
+    padding: 0 20px 14px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  :global(.search-unavailable) {
+    color: var(--text-muted);
+    font-size: 0.85em;
+    line-height: 1.8;
+    padding: 8px 0;
+  }
+
+  :global(.search-unavailable code) {
+    font-size: 0.9em;
+    background: var(--bg);
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+</style>

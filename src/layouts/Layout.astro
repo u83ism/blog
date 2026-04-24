@@ -98,7 +98,7 @@ const pageTitle = title ? `${title} | u83 said so.` : 'u83 said so.';
     <Nav currentPath={currentPath} />
     <div class:list={['page-body', { 'has-sidebar': Astro.slots.has('sidebar') }]}>
       {Astro.slots.has('sidebar') && (
-        <aside class="page-sidebar">
+        <aside class="page-sidebar" data-pagefind-ignore>
           <slot name="sidebar" />
         </aside>
       )}
