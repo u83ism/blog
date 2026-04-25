@@ -68,6 +68,13 @@ export function groupPostsByYear(
     .map(({ year, yearPosts }) => ({ year, posts: yearPosts }));
 }
 
+/** Markdownの記法記号を除いた文字数から読了時間（分）を推定する（日本語: 500字/分） */
+export function estimateReadingTime(body: string): number {
+  const stripped = body.replace(/```[\s\S]*?```/g, '').replace(/[#*`~_>\-\[\]()!|]/g, '');
+  const charCount = stripped.replace(/\s+/g, '').length;
+  return Math.max(1, Math.ceil(charCount / 500));
+}
+
 /** 共通タグ数が多い順に関連記事を返す（自記事を除く） */
 export function findRelatedPosts(
   current: CollectionEntry<'posts'>,
