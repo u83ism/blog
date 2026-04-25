@@ -1,7 +1,9 @@
 import { defineConfig } from 'astro/config';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
+  integrations: [sitemap()],
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,
   // GitHub Pagesのリポジトリ名をbaseとして設定
