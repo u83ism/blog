@@ -1,0 +1,51 @@
+---
+// 月別アーカイブページ
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import PostList from '@/components/PostList.astro';
+import ArchiveNav from '@/components/ArchiveNav.astro';
+import { groupPostsByYear, sortPostsByDateDesc } from '@/lib/posts';
+
+export async function getStaticPaths() {
+  const allPosts = await getCollection('posts');
+
+  // 年+月の組み合わせを収集してルートを生成
+  const combinationMap = new Map<string, { year: number; month: number; posts: typeof allPosts }>();
+  for (const post of allPosts) {
+    const year = post.data.date.getFullYear();
+    const month = post.data.date.getMonth() + 1;
+    const key = `${year}-${month}`;
+    const entry = combinationMap.get(key) ?? { year, month, posts: [] };
+    entry.posts.push(post);
+    combinationMap.set(key, entry);
+  }
+
+  return [...combinationMap.values()].map(({ year, month, posts }) => ({
+    params: { year: String(year), month: String(month).padStart(2, '0') },
+    props: { year, month, posts: sortPostsByDateDesc(posts) },
+  }));
+}
+
+interface Props {
+  year: number;
+  month: number;
+  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+}
+
+const { year, month, posts } = Astro.props;
+
+// サイドバー用データ
+const allPosts = await getCollection('posts');
+const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
+---
+
+<Layout title={`${year}年${month}月のアーカイブ`}>
+  <Fragment slot="sidebar">
+    <ArchiveNav years={sortedYears} currentYear={year} />
+  </Fragment>
+
+  <div class="container" style="padding-top: 32px; padding-bottom: 48px;">
+    <h1 class="page-heading">{year}年{month}月の記事（{posts.length}件）</h1>
+    <PostList posts={posts} />
+  </div>
+</Layout>

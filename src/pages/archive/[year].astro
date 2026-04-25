@@ -31,6 +31,7 @@ const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
 const monthGroups = groupPostsByMonth(posts);
 
 const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title={`${year}年のアーカイブ`}>
@@ -43,7 +44,11 @@ const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8�
 
     {monthGroups.map(({ month, posts: monthPosts }) => (
       <section class="month-section">
-        <h2 class="month-heading">{MONTH_NAMES[month - 1]}</h2>
+        <h2 class="month-heading">
+          <a href={`${base}archive/${year}/${String(month).padStart(2, '0')}/`} data-astro-prefetch>
+            {MONTH_NAMES[month - 1]}
+          </a>
+        </h2>
         <PostList posts={monthPosts} />
       </section>
     ))}
@@ -63,11 +68,22 @@ const MONTH_NAMES = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8�
   .month-heading {
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--accent-dark);
     margin-bottom: 10px;
+    display: inline-block;
+  }
+
+  .month-heading a {
+    color: var(--accent-dark);
     padding: 4px 10px;
     background: var(--accent-light);
     border-radius: var(--radius);
+    text-decoration: none;
     display: inline-block;
+    transition: background 0.1s, color 0.1s;
+  }
+
+  .month-heading a:hover {
+    background: var(--accent);
+    color: var(--white);
   }
 </style>
