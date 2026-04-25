@@ -1,0 +1,80 @@
+---
+// パンくずリストコンポーネント（構造化データ JSON-LD つき）
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const siteUrl = import.meta.env.SITE ?? 'https://u83ism.github.io';
+
+const jsonLdItems = items.map((item, i) => ({
+  '@type': 'ListItem',
+  position: i + 1,
+  name: item.label,
+  ...(item.href ? { item: `${siteUrl}${item.href}` } : {}),
+}));
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: jsonLdItems,
+};
+---
+
+<nav class="breadcrumb" aria-label="パンくずリスト">
+  <ol>
+    {items.map((item, i) => (
+      <li>
+        {i > 0 && <span class="sep" aria-hidden="true">›</span>}
+        {item.href
+          ? <a href={item.href}>{item.label}</a>
+          : <span aria-current="page">{item.label}</span>
+        }
+      </li>
+    ))}
+  </ol>
+</nav>
+
+<script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+<style>
+  .breadcrumb {
+    margin-bottom: 20px;
+  }
+
+  ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+
+  a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .sep {
+    color: var(--border);
+    margin: 0 2px;
+  }
+</style>

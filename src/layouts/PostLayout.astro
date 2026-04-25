@@ -1,6 +1,7 @@
 ---
 // 個別記事ページレイアウト（カラム集中型・サイドバーなし）
 import Layout from './Layout.astro';
+import Breadcrumb from '@/components/Breadcrumb.astro';
 import { formatDateDisplay, buildPostUrl, resolveTitle, findRelatedPosts, estimateReadingTime } from '@/lib/posts';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
@@ -24,6 +25,10 @@ const dateDisplay = formatDateDisplay(post.data.date);
 
 <Layout title={title} ogType="article">
   <article class="post-article">
+    <Breadcrumb items={[
+      { label: 'ホーム', href: base },
+      { label: title },
+    ]} />
     <header class="post-header">
       <div class="post-meta">
         <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
