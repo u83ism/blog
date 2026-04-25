@@ -1,8 +1,9 @@
 ---
 // 個別記事ページレイアウト（カラム集中型・サイドバーなし）
 import Layout from './Layout.astro';
-import { formatDateDisplay, buildPostUrl, resolveTitle } from '@/lib/posts';
+import { formatDateDisplay, buildPostUrl, resolveTitle, findRelatedPosts } from '@/lib/posts';
 import type { CollectionEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 
 interface Props {
   post: CollectionEntry<'posts'>;
@@ -11,6 +12,9 @@ interface Props {
 }
 
 const { post, prevPost, nextPost } = Astro.props;
+
+const allPosts = await getCollection('posts');
+const relatedPosts = findRelatedPosts(post, allPosts);
 
 const base = import.meta.env.BASE_URL;
 const title = resolveTitle(post);
@@ -36,6 +40,23 @@ const dateDisplay = formatDateDisplay(post.data.date);
     <div class="post-content">
       <slot />
     </div>
+
+    <!-- 関連記事 -->
+    {relatedPosts.length > 0 && (
+      <aside class="related-posts">
+        <h2 class="related-heading">関連記事</h2>
+        <ul class="related-list">
+          {relatedPosts.map((p) => (
+            <li>
+              <a href={buildPostUrl(base, p.id)} data-astro-prefetch>
+                <span class="related-date">{formatDateDisplay(p.data.date)}</span>
+                <span class="related-title">{resolveTitle(p)}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </aside>
+    )}
 
     <!-- 前後記事ナビゲーション -->
     <nav class="post-nav" aria-label="前後の記事">
@@ -105,6 +126,59 @@ const dateDisplay = formatDateDisplay(post.data.date);
   .post-tags a:hover {
     background: var(--accent);
     color: var(--white);
+  }
+
+  .related-posts {
+    margin-top: 48px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .related-heading {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 12px;
+  }
+
+  .related-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .related-list a {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: background 0.1s;
+  }
+
+  .related-list a:hover {
+    background: var(--accent-light);
+  }
+
+  .related-date {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .related-title {
+    font-size: 0.85rem;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  .related-list a:hover .related-title {
+    color: var(--accent);
   }
 
   .post-nav {

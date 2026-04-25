@@ -68,6 +68,25 @@ export function groupPostsByYear(
     .map(({ year, yearPosts }) => ({ year, posts: yearPosts }));
 }
 
+/** 共通タグ数が多い順に関連記事を返す（自記事を除く） */
+export function findRelatedPosts(
+  current: CollectionEntry<'posts'>,
+  posts: readonly CollectionEntry<'posts'>[],
+  limit: number = 5,
+): CollectionEntry<'posts'>[] {
+  const currentTags = new Set(current.data.tags);
+  return posts
+    .filter((p) => p.id !== current.id)
+    .map((p) => ({
+      post: p,
+      score: p.data.tags.filter((t) => currentTags.has(t)).length,
+    }))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score || b.post.data.date.getTime() - a.post.data.date.getTime())
+    .slice(0, limit)
+    .map(({ post }) => post);
+}
+
 /** 記事を月ごとにグループ化する（降順） */
 export function groupPostsByMonth(
   posts: readonly CollectionEntry<'posts'>[],
