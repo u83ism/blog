@@ -33,6 +33,17 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 
 // <title>タグに使う文字列
 const pageTitle = title ? `${title} | u83 said so.` : 'u83 said so.';
+
+// サイトのルートURL（WebSite JSON-LD 用）
+const siteRootUrl = new URL(import.meta.env.BASE_URL, Astro.site).href;
+
+// WebSite JSON-LD 構造化データ（Google のサイト名認識に必要）
+const websiteJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'u83 said so.',
+  url: siteRootUrl,
+});
 ---
 
 <!doctype html>
@@ -43,6 +54,7 @@ const pageTitle = title ? `${title} | u83 said so.` : 'u83 said so.';
     <meta name="description" content={description} />
     <title>{pageTitle}</title>
     <link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL}favicon.svg`} />
+    <link rel="icon" type="image/png" href={`${import.meta.env.BASE_URL}favicon.png`} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="alternate" type="application/rss+xml" title="u83 said so." href={`${import.meta.env.BASE_URL}rss.xml`} />
 
@@ -60,6 +72,9 @@ const pageTitle = title ? `${title} | u83 said so.` : 'u83 said so.';
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
+
+    <!-- サイト名を Google に伝える構造化データ -->
+    <script is:inline type="application/ld+json" set:html={websiteJsonLd} />
 
     <ClientRouter />
   </head>
