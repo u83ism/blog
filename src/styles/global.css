@@ -81,6 +81,34 @@ img {
   font-size: 0.95em;
 }
 
+/* ===== テーブル ===== */
+.post-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5em 0;
+  font-size: 0.92em;
+  overflow-x: auto;
+  display: block;
+}
+
+.post-content th,
+.post-content td {
+  border: 1px solid #a89f94;
+  padding: 0.5em 0.9em;
+  text-align: left;
+  vertical-align: top;
+}
+
+.post-content th {
+  background: #e3dbd1;
+  color: var(--text);
+  font-weight: 700;
+}
+
+.post-content tr:nth-child(even) td {
+  background: #eae4da;
+}
+
 /* ===== ページ見出し ===== */
 .page-heading {
   font-size: 1.2rem;
