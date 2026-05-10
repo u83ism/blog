@@ -5,12 +5,13 @@ import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import TagList from '@/components/TagList.astro';
 import { sortPostsByDateDesc, collectTags } from '@/lib/posts';
+import type { Tag } from '@/lib/tags';
 
 export async function getStaticPaths() {
   const allPosts = await getCollection('posts');
 
   // 全タグを収集する
-  const tagSet = new Set<string>();
+  const tagSet = new Set<Tag>();
   for (const post of allPosts) {
     for (const tag of post.data.tags) {
       tagSet.add(tag);
