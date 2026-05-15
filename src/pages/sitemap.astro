@@ -1,0 +1,116 @@
+---
+// HTMLサイトマップ（XMLサイトマップの代替としてGoogleがリンクを辿れるようにする）
+import { getCollection } from 'astro:content';
+import Layout from '@/layouts/Layout.astro';
+import { sortPostsByDateDesc, resolveTitle, buildPostUrl, collectTags, groupPostsByYear } from '@/lib/posts';
+
+const allPosts = await getCollection('posts');
+const yearGroups = groupPostsByYear(allPosts);
+const tags = collectTags(allPosts);
+
+const base = import.meta.env.BASE_URL;
+---
+
+<Layout title="サイトマップ">
+  <div class="container">
+    <h1 class="page-heading">サイトマップ</h1>
+
+    <section class="section">
+      <h2 class="section-heading">主要ページ</h2>
+      <ul class="link-list">
+        <li><a href={base}>トップ</a></li>
+        <li><a href={`${base}archive/`}>アーカイブ</a></li>
+        <li><a href={`${base}tags/`}>タグ一覧</a></li>
+      </ul>
+    </section>
+
+    <section class="section">
+      <h2 class="section-heading">タグ</h2>
+      <ul class="link-list tag-list">
+        {tags.map(({ tag, count }) => (
+          <li>
+            <a href={`${base}tags/${encodeURIComponent(tag)}/`}>
+              #{tag}<span class="count">（{count}件）</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {yearGroups.map(({ year, posts }) => (
+      <section class="section">
+        <h2 class="section-heading">
+          <a href={`${base}archive/${year}/`}>{year}年</a>
+          <span class="count">（{posts.length}件）</span>
+        </h2>
+        <ul class="link-list">
+          {sortPostsByDateDesc(posts).map((post) => (
+            <li>
+              <a href={buildPostUrl(base, post.id)}>{resolveTitle(post)}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+</Layout>
+
+<style>
+  .container {
+    padding-top: 32px;
+    padding-bottom: 48px;
+  }
+
+  .section {
+    margin-top: 32px;
+  }
+
+  .section-heading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 6px;
+    margin-bottom: 12px;
+  }
+
+  .section-heading a {
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .section-heading a:hover {
+    color: var(--accent);
+  }
+
+  .count {
+    font-size: 0.78rem;
+    font-weight: 400;
+    color: var(--text-muted);
+    margin-left: 4px;
+  }
+
+  .link-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .link-list a {
+    font-size: 0.9rem;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .link-list a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
+
+  .tag-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+  }
+</style>
