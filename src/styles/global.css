@@ -186,6 +186,37 @@ img {
   background: #eae4da;
 }
 
+/* ===== 記事本文の見出し（記事タイトルより小さく保つ） ===== */
+.post-content h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 2em 0 0.6em;
+}
+
+.post-content h2 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 1.8em 0 0.5em;
+}
+
+.post-content h3 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 1.5em 0 0.4em;
+}
+
+.post-content h4,
+.post-content h5,
+.post-content h6 {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.5;
+  margin: 1.2em 0 0.4em;
+}
+
 /* ===== ページ見出し ===== */
 .page-heading {
   font-size: 1.2rem;
