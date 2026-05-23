@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "upload": "tsx scripts/upload-images.ts"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",
@@ -14,8 +15,11 @@
     "remark-github-alerts": "^0.1.1"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.9",
     "@types/node": "^25.6.0",
+    "cloudinary": "^2.10.0",
     "pagefind": "^1.5.2",
-    "tsx": "^4.19.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.9.3"
   }
 }

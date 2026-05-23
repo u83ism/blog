@@ -1,12 +1,14 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import remarkGithubAlerts from 'remark-github-alerts';
+import { rehypeImageLink } from './src/lib/rehype-image-link';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkGithubAlerts],
+    rehypePlugins: [rehypeImageLink],
   },
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,

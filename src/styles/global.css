@@ -186,6 +186,30 @@ img {
   background: #eae4da;
 }
 
+/* ===== 記事本文の画像 ===== */
+.post-content img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5em auto;
+  border-radius: var(--radius);
+}
+
+/* 画像リンク（新しいタブで拡大表示） */
+.post-content a:has(img) {
+  display: block;
+  text-decoration: none;
+  cursor: zoom-in;
+}
+
+.post-content a:has(img) img {
+  transition: opacity 0.15s;
+}
+
+.post-content a:has(img):hover img {
+  opacity: 0.8;
+}
+
 /* ===== 記事本文の見出し（記事タイトルより小さく保つ） ===== */
 .post-content h1 {
   font-size: 1.4rem;
