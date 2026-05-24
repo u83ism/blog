@@ -1,7 +1,8 @@
 ---
-// 個別記事ページレイアウト（カラム集中型・サイドバーなし）
+// 個別記事ページレイアウト（2カラムフレックス：本文 + シェアサイドバー）
 import Layout from './Layout.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
+import ShareButtons from '@/components/ShareButtons.astro';
 import { formatDateDisplay, buildPostUrl, resolveTitle, findRelatedPosts, estimateReadingTime } from '@/lib/posts';
 import type { CollectionEntry } from 'astro:content';
 import { getCollection } from 'astro:content';
@@ -24,74 +25,134 @@ const dateDisplay = formatDateDisplay(post.data.date);
 ---
 
 <Layout title={title} ogType="article">
-  <article class="post-article">
-    <Breadcrumb items={[
-      { label: 'ホーム', href: base },
-      { label: title },
-    ]} />
-    <header class="post-header">
-      <div class="post-meta">
-        <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
-        <span class="post-reading-time">約{readingTime}分</span>
+  <div class="post-layout">
+
+    <article class="post-article">
+      <Breadcrumb items={[
+        { label: 'ホーム', href: base },
+        { label: title },
+      ]} />
+      <header class="post-header">
+        <div class="post-meta">
+          <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
+          <span class="post-reading-time">約{readingTime}分</span>
+        </div>
+        <h1 class="post-title">{title}</h1>
+        {post.data.tags.length > 0 && (
+          <ul class="post-tags" aria-label="タグ">
+            {post.data.tags.map((tag) => (
+              <li>
+                <a href={`${base}tags/${encodeURIComponent(tag)}/`}>#{tag}</a>
+              </li>
+            ))}
+          </ul>
+        )}
+      </header>
+
+      <div class="post-content">
+        <slot />
       </div>
-      <h1 class="post-title">{title}</h1>
-      {post.data.tags.length > 0 && (
-        <ul class="post-tags" aria-label="タグ">
-          {post.data.tags.map((tag) => (
-            <li>
-              <a href={`${base}tags/${encodeURIComponent(tag)}/`}>#{tag}</a>
-            </li>
-          ))}
-        </ul>
+
+      <!-- モバイル用シェアボタン（PC では非表示） -->
+      <div class="share-inline">
+        <ShareButtons url={Astro.url.href} title={title} />
+      </div>
+
+      <!-- 関連記事 -->
+      {relatedPosts.length > 0 && (
+        <aside class="related-posts">
+          <h2 class="related-heading">関連記事</h2>
+          <ul class="related-list">
+            {relatedPosts.map((p) => (
+              <li>
+                <a href={buildPostUrl(base, p.id)} data-astro-prefetch>
+                  <span class="related-date">{formatDateDisplay(p.data.date)}</span>
+                  <span class="related-title">{resolveTitle(p)}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </aside>
       )}
-    </header>
 
-    <div class="post-content">
-      <slot />
-    </div>
+      <!-- 前後記事ナビゲーション -->
+      <nav class="post-nav" aria-label="前後の記事">
+        <div class="post-nav-prev">
+          {nextPost && (
+            <a href={buildPostUrl(base, nextPost.id)} data-astro-prefetch>
+              ← {resolveTitle(nextPost)}
+            </a>
+          )}
+        </div>
+        <div class="post-nav-next">
+          {prevPost && (
+            <a href={buildPostUrl(base, prevPost.id)} data-astro-prefetch>
+              {resolveTitle(prevPost)} →
+            </a>
+          )}
+        </div>
+      </nav>
+    </article>
 
-    <!-- 関連記事 -->
-    {relatedPosts.length > 0 && (
-      <aside class="related-posts">
-        <h2 class="related-heading">関連記事</h2>
-        <ul class="related-list">
-          {relatedPosts.map((p) => (
-            <li>
-              <a href={buildPostUrl(base, p.id)} data-astro-prefetch>
-                <span class="related-date">{formatDateDisplay(p.data.date)}</span>
-                <span class="related-title">{resolveTitle(p)}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </aside>
-    )}
+    <!-- シェアボタンサイドバー（PC: 記事右横に sticky 表示） -->
+    <aside class="post-share-sidebar" aria-label="シェア">
+      <ShareButtons url={Astro.url.href} title={title} />
+    </aside>
 
-    <!-- 前後記事ナビゲーション -->
-    <nav class="post-nav" aria-label="前後の記事">
-      <div class="post-nav-prev">
-        {nextPost && (
-          <a href={buildPostUrl(base, nextPost.id)} data-astro-prefetch>
-            ← {resolveTitle(nextPost)}
-          </a>
-        )}
-      </div>
-      <div class="post-nav-next">
-        {prevPost && (
-          <a href={buildPostUrl(base, prevPost.id)} data-astro-prefetch>
-            {resolveTitle(prevPost)} →
-          </a>
-        )}
-      </div>
-    </nav>
-  </article>
+  </div>
 </Layout>
 
 <style>
-  .post-article {
-    max-width: 800px;
+  /*
+   * box-sizing: border-box 前提の幅計算:
+   *   800px(記事) + 24px(gap) + 86px(サイドバー) = 910px コンテンツ幅
+   *   + 24px × 2(水平 padding) = 958px
+   *
+   * align-items はデフォルト(stretch)のまま:
+   *   サイドバーが記事と同じ高さに引き伸ばされ、
+   *   ShareButtons の position: sticky が記事末尾まで有効になる
+   */
+  .post-layout {
+    max-width: 958px;
     margin: 0 auto;
     padding: 48px 24px 80px;
+    display: flex;
+    gap: 24px;
+  }
+
+  .post-article {
+    flex: 1;
+    min-width: 0; /* フレックス内でのコンテンツ幅オーバーフロー防止 */
+  }
+
+  .post-share-sidebar {
+    flex-shrink: 0;
+    width: 86px;
+  }
+
+  /* モバイル: 記事内ボタンを表示、サイドバーを非表示 */
+  .share-inline {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  /* PC: 記事内ボタンを非表示、サイドバーを表示 */
+  @media (min-width: 960px) {
+    .share-inline {
+      display: none;
+    }
+  }
+
+  /* 幅が足りない場合は縦積みに縮退 */
+  @media (max-width: 959px) {
+    .post-layout {
+      flex-direction: column;
+    }
+
+    .post-share-sidebar {
+      display: none;
+    }
   }
 
   .post-header {

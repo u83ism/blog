@@ -2,15 +2,16 @@
  * 使用可能なタグの正規リスト
  * content.config.ts のスキーマおよびタグ付与スクリプトと共用する
  */
-export const TAGS = [
+export const tags = [
   // ジャンル
   'ゲーム',
   '音ゲー',
-  'アニメ',
+  'エロゲー',
+  'アニメ',  
   '漫画',
+  'ライトノベル',
   '映画',
   'ドラマ',
-  'エロゲー',
   '音楽',
   '読書',
   'プロレス',
@@ -51,4 +52,4 @@ export const TAGS = [
   '新日本プロレス',
 ] as const;
 
-export type Tag = typeof TAGS[number];
+export type Tag = typeof tags[number];

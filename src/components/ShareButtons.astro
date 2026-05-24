@@ -1,0 +1,141 @@
+---
+interface Props {
+  url: string;
+  title: string;
+}
+
+const { url, title } = Astro.props;
+
+const shareLinks = [
+  {
+    label: 'X',
+    href: `https://x.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`,
+    color: '#000000',
+    // Simple Icons より（公式ページ 402 のため）
+    svgPath: 'M14.234 10.162 22.977 0h-2.072l-7.591 8.824L7.251 0H.258l9.168 13.343L.258 24H2.33l8.016-9.318L16.749 24h6.993zm-2.837 3.299-.929-1.329L3.076 1.56h3.182l5.965 8.532.929 1.329 7.754 11.09h-3.182z',
+  },
+  {
+    label: 'Bluesky',
+    href: `https://bsky.app/intent/compose?text=${encodeURIComponent(title + ' ' + url)}`,
+    color: '#0085ff',
+    // Simple Icons より（公式ウィジェットなし）
+    svgPath: 'M5.202 2.857C7.954 4.922 10.913 9.11 12 11.358c1.087-2.247 4.046-6.436 6.798-8.501C20.783 1.366 24 .213 24 3.883c0 .732-.42 6.156-.667 7.037-.856 3.061-3.978 3.842-6.755 3.37 4.854.826 6.089 3.562 3.422 6.299-5.065 5.196-7.28-1.304-7.847-2.97-.104-.305-.152-.448-.153-.327 0-.121-.05.022-.153.327-.568 1.666-2.782 8.166-7.847 2.97-2.667-2.737-1.432-5.473 3.422-6.3-2.777.473-5.899-.308-6.755-3.369C.42 10.04 0 4.615 0 3.883c0-3.67 3.217-2.517 5.202-1.026',
+  },
+  {
+    label: 'LINE',
+    href: `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`,
+    color: '#06C755',
+    // Simple Icons より（公式は SVG 非提供）
+    svgPath: 'M19.365 9.863c.349 0 .63.285.63.631 0 .345-.281.63-.63.63H17.61v1.125h1.755c.349 0 .63.283.63.63 0 .344-.281.629-.63.629h-2.386c-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63h2.386c.346 0 .627.285.627.63 0 .349-.281.63-.63.63H17.61v1.125h1.755zm-3.855 3.016c0 .27-.174.51-.432.596-.064.021-.133.031-.199.031-.211 0-.391-.09-.51-.25l-2.443-3.317v2.94c0 .344-.279.629-.631.629-.346 0-.626-.285-.626-.629V8.108c0-.27.173-.51.43-.595.06-.023.136-.033.194-.033.195 0 .375.104.495.254l2.462 3.33V8.108c0-.345.282-.63.63-.63.345 0 .63.285.63.63v4.771zm-5.741 0c0 .344-.282.629-.631.629-.345 0-.627-.285-.627-.629V8.108c0-.345.282-.63.63-.63.346 0 .628.285.628.63v4.771zm-2.466.629H4.917c-.345 0-.63-.285-.63-.629V8.108c0-.345.285-.63.63-.63.348 0 .63.285.63.63v4.141h1.756c.348 0 .629.283.629.63 0 .344-.282.629-.629.629M24 10.314C24 4.943 18.615.572 12 .572S0 4.943 0 10.314c0 4.811 4.27 8.842 10.035 9.608.391.082.923.258 1.058.59.12.301.079.766.038 1.08l-.164 1.02c-.045.301-.24 1.186 1.049.645 1.291-.539 6.916-4.078 9.436-6.975C23.176 14.393 24 12.458 24 10.314',
+  },
+] as const;
+---
+
+<div class="share-buttons" aria-label="この記事をシェア">
+  <ul class="share-list">
+    {shareLinks.map(({ label, href, color, svgPath }) => (
+      <li>
+        <a
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="share-link"
+          style={`--brand: ${color};`}
+          aria-label={`${label}でシェア`}
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true" class="share-icon">
+            <path d={svgPath} />
+          </svg>
+        </a>
+      </li>
+    ))}
+    <li>
+      <button class="share-link share-copy" type="button" data-url={url} aria-label="リンクをコピー">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="share-icon">
+          <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      </button>
+    </li>
+  </ul>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.share-copy').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const url = btn.dataset.url;
+      if (!url) return;
+      await navigator.clipboard.writeText(url);
+      btn.disabled = true;
+      btn.setAttribute('aria-label', 'コピー済み');
+      setTimeout(() => {
+        btn.disabled = false;
+        btn.setAttribute('aria-label', 'リンクをコピー');
+      }, 2000);
+    });
+  });
+</script>
+
+<style>
+  /* モバイル: 横並び中央揃え */
+  .share-buttons {
+    display: flex;
+    justify-content: center;
+  }
+
+  .share-list {
+    list-style: none;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .share-link {
+    --brand: var(--accent);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    border: 1.5px solid var(--brand);
+    color: var(--brand);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .share-link:hover {
+    background: var(--brand);
+    color: #fff;
+  }
+
+  .share-icon {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+    display: block;
+  }
+
+  .share-copy:disabled {
+    opacity: 0.5;
+    cursor: default;
+  }
+
+  /* PC: 86px サイドバー列の中で sticky 縦並び中央揃え */
+  @media (min-width: 960px) {
+    .share-buttons {
+      position: sticky;
+      top: 24px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .share-list {
+      flex-direction: column;
+      gap: 10px;
+      justify-content: flex-start;
+    }
+  }
+</style>

@@ -1,6 +1,6 @@
 import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
-import { TAGS } from './lib/tags';
+import { tags } from './lib/tags';
 
 // 雑記エントリのコレクション定義（Astro 6: glob ローダーを使用）
 const posts = defineCollection({
@@ -9,7 +9,7 @@ const posts = defineCollection({
     // 投稿日付（必須）
     date: z.date(),
     // タグ一覧（正規タグのみ許可、省略時は空配列）
-    tags: z.array(z.enum(TAGS)).default([]),
+    tags: z.array(z.enum(tags)).default([]),
     // タイトル（省略時は date から自動生成: YYYY年MM月DD日）
     title: z.string().optional(),
   }),
