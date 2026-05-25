@@ -2,18 +2,18 @@ import type { CollectionEntry } from 'astro:content';
 
 /** date から YYYY年MM月DD日 形式のタイトルを生成する */
 export function formatDateTitle(date: Date): string {
-  const y = date.getFullYear();
-  const m = date.getMonth() + 1;
-  const d = date.getDate();
-  return `${y}年${m}月${d}日`;
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}年${month}月${day}日`;
 }
 
 /** date を YYYY/MM/DD 形式の文字列に変換する */
 export function formatDateDisplay(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}/${m}/${d}`;
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}/${month}/${day}`;
 }
 
 /** 記事のタイトルを取得する（title が省略時は日付から自動生成） */
@@ -32,7 +32,7 @@ export function sortPostsByDateDesc(
   posts: readonly CollectionEntry<'posts'>[],
 ): CollectionEntry<'posts'>[] {
   return [...posts].sort(
-    (a, b) => b.data.date.getTime() - a.data.date.getTime(),
+    (postA, postB) => postB.data.date.getTime() - postA.data.date.getTime(),
   );
 }
 
@@ -48,7 +48,7 @@ export function collectTags(
   }
   return [...counter.entries()]
     .map(([tag, count]) => ({ tag, count }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag, 'ja'));
+    .sort((tagCountA, tagCountB) => tagCountB.count - tagCountA.count || tagCountA.tag.localeCompare(tagCountB.tag, 'ja'));
 }
 
 /** 記事を年ごとにグループ化する（降順） */
@@ -63,7 +63,7 @@ export function groupPostsByYear(
     groups.set(year, group);
   }
   return [...groups.entries()]
-    .sort(([a], [b]) => b - a)
+    .sort(([yearA], [yearB]) => yearB - yearA)
     .map(([year, yearPosts]) => ({ year, yearPosts: sortPostsByDateDesc(yearPosts) }))
     .map(({ year, yearPosts }) => ({ year, posts: yearPosts }));
 }
@@ -83,13 +83,13 @@ export function findRelatedPosts(
 ): CollectionEntry<'posts'>[] {
   const currentTags = new Set(current.data.tags);
   return posts
-    .filter((p) => p.id !== current.id)
-    .map((p) => ({
-      post: p,
-      score: p.data.tags.filter((t) => currentTags.has(t)).length,
+    .filter((post) => post.id !== current.id)
+    .map((post) => ({
+      post,
+      score: post.data.tags.filter((tag) => currentTags.has(tag)).length,
     }))
     .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score || b.post.data.date.getTime() - a.post.data.date.getTime())
+    .sort((entryA, entryB) => entryB.score - entryA.score || entryB.post.data.date.getTime() - entryA.post.data.date.getTime())
     .slice(0, limit)
     .map(({ post }) => post);
 }
@@ -106,6 +106,6 @@ export function groupPostsByMonth(
     groups.set(month, group);
   }
   return [...groups.entries()]
-    .sort(([a], [b]) => b - a)
+    .sort(([monthA], [monthB]) => monthB - monthA)
     .map(([month, monthPosts]) => ({ month, posts: sortPostsByDateDesc(monthPosts) }));
 }

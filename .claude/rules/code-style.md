@@ -128,6 +128,15 @@ Effectであることを明示する語を含める：
 
 ---
 
+## 変数命名規則
+
+- **略語・省略形を禁止する**（ループカウンタ `i` / `j` を除く）
+- 1〜2文字の変数名は原則禁止: `s`, `p`, `t`, `el`, `fb` など
+- 一般的な略語も禁止: `res`（→ `response`）、`dir`（→ `directory`）、`idx`（→ `index`）、`fn`（→ `function`）、`cb`（→ `callback`）、`cfg`（→ `config`）、`ctx`（→ `context`）、`tmp`（→ `tempXxx`）など
+- ソートのコンパレータ引数も具体的な名前を付ける: `(postA, postB)` / `([yearA], [yearB])` など
+
+---
+
 ## 厳格制約
 
 - Astro以外の外部ライブラリは正当な理由なしに導入しない

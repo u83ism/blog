@@ -53,8 +53,8 @@
     dialog.showModal();
     // Pagefind UIのレンダリング完了後に入力欄へフォーカスを移す
     requestAnimationFrame(function () {
-      var input = dialog.querySelector('input');
-      if (input) input.focus();
+      var inputElement = dialog.querySelector('input');
+      if (inputElement) inputElement.focus();
     });
   }
 

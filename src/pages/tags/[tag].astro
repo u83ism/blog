@@ -23,7 +23,7 @@ export async function getStaticPaths() {
     params: { tag },
     props: {
       tag,
-      posts: sortPostsByDateDesc(allPosts.filter((p) => p.data.tags.includes(tag))),
+      posts: sortPostsByDateDesc(allPosts.filter((post) => post.data.tags.includes(tag))),
     },
   }));
 }

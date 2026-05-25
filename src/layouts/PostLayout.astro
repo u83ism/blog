@@ -63,11 +63,11 @@ const dateDisplay = formatDateDisplay(post.data.date);
         <aside class="related-posts">
           <h2 class="related-heading">関連記事</h2>
           <ul class="related-list">
-            {relatedPosts.map((p) => (
+            {relatedPosts.map((post) => (
               <li>
-                <a href={buildPostUrl(base, p.id)} data-astro-prefetch>
-                  <span class="related-date">{formatDateDisplay(p.data.date)}</span>
-                  <span class="related-title">{resolveTitle(p)}</span>
+                <a href={buildPostUrl(base, post.id)} data-astro-prefetch>
+                  <span class="related-date">{formatDateDisplay(post.data.date)}</span>
+                  <span class="related-title">{resolveTitle(post)}</span>
                 </a>
               </li>
             ))}
@@ -286,3 +286,40 @@ const dateDisplay = formatDateDisplay(post.data.date);
     text-align: right;
   }
 </style>
+
+<script>
+  // window.twttr の型定義
+  type Twttr = { widgets: { load: () => void } };
+  declare global {
+    interface Window { twttr?: Twttr; }
+  }
+
+  // X埋め込みがある記事ページのみwidgets.jsを読み込む
+  const loadXWidgets = () => {
+    if (!document.querySelector('.twitter-tweet')) return;
+
+    // iframeが生成されなかったembedのフォールバックを表示（widgets.js失敗時）
+    const revealFailedFallbacks = () => {
+      document.querySelectorAll('.x-embed').forEach((embed) => {
+        if (!embed.querySelector('iframe')) {
+          embed.querySelector('.x-embed-fallback')?.classList.add('x-embed-fallback--visible');
+        }
+      });
+    };
+
+    if (window.twttr) {
+      window.twttr.widgets.load();
+      setTimeout(revealFailedFallbacks, 3000);
+      return;
+    }
+
+    const scriptElement = document.createElement('script');
+    scriptElement.src = 'https://platform.twitter.com/widgets.js';
+    scriptElement.async = true;
+    document.head.appendChild(scriptElement);
+    // 広告ブロッカー等でwidgets.jsが読み込めない場合のタイムアウト
+    setTimeout(revealFailedFallbacks, 8000);
+  };
+
+  document.addEventListener('astro:page-load', loadXWidgets);
+</script>

@@ -25,7 +25,7 @@ const { year, posts } = Astro.props;
 
 // サイドバー用データ
 const allPosts = await getCollection('posts');
-const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
+const sortedYears = groupPostsByYear(allPosts).map(({ year }) => year);
 
 // 月別グループ化
 const monthGroups = groupPostsByMonth(posts);

@@ -36,7 +36,7 @@ const { year, month, posts } = Astro.props;
 
 // サイドバー用データ
 const allPosts = await getCollection('posts');
-const sortedYears = groupPostsByYear(allPosts).map(({ year: y }) => y);
+const sortedYears = groupPostsByYear(allPosts).map(({ year }) => year);
 ---
 
 <Layout title={`${year}年${month}月のアーカイブ`}>
