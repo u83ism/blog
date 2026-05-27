@@ -210,23 +210,41 @@ img {
   opacity: 0.8;
 }
 
+/* 複数画像の横並びコンテナ（rehypeImageRowが付与するクラス） */
+.post-content .image-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75em;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 1.5em 0;
+}
+
+.post-content .image-row > a {
+  flex: 0 1 auto;
+}
+
+.post-content .image-row img {
+  margin: 0;
+}
+
 /* ===== 記事本文の見出し（記事タイトルより小さく保つ） ===== */
 .post-content h1 {
-  font-size: 1.4rem;
+  font-size: 1.6rem;
   font-weight: 700;
   line-height: 1.5;
   margin: 2em 0 0.6em;
 }
 
 .post-content h2 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   font-weight: 700;
   line-height: 1.5;
   margin: 1.8em 0 0.5em;
 }
 
 .post-content h3 {
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 700;
   line-height: 1.5;
   margin: 1.5em 0 0.4em;
@@ -263,6 +281,53 @@ img {
   text-transform: uppercase;
   color: var(--text-muted);
   margin-bottom: 10px;
+}
+
+/* ===== X（Twitter）埋め込み ===== */
+.post-content .x-embed {
+  margin: 1.5em 0;
+}
+
+/* widgets.js処理前のblockquoteをグローバルblockquoteスタイルから切り離す */
+.post-content .x-embed .twitter-tweet {
+  border-left: none;
+  background: var(--white);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1em 1.2em;
+  margin: 0;
+  font-size: 0.9em;
+  max-width: 550px;
+}
+
+/* widgets.jsがiframeを生成したらblockquoteを非表示 */
+.post-content .x-embed:has(iframe) .twitter-tweet {
+  display: none;
+}
+
+/* フォールバックテキスト（widgets.js読み込み失敗時のみ表示） */
+.post-content .x-embed-fallback {
+  display: none;
+  margin-top: 6px;
+  padding: 0.4em 0.8em;
+  border-left: 2px solid var(--border);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.post-content .x-embed-fallback--visible {
+  display: block;
+}
+
+.post-content .x-embed-fallback p {
+  margin-bottom: 0.3em;
+  font-size: inherit;
+}
+
+.post-content .x-embed-fallback p:last-child {
+  margin-bottom: 0;
 }
 
 /* ===== ユーティリティ ===== */

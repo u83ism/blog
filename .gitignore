@@ -23,3 +23,6 @@ Thumbs.db
 # 画像ファイル
 # 新方式ではCloudinaryにアップロードしたものをリンクする形にするため
 public/images
+
+# アップロードスクリプトのMD5キャッシュ
+scripts/.upload-cache.json

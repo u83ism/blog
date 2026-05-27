@@ -2,13 +2,16 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import remarkGithubAlerts from 'remark-github-alerts';
 import { rehypeImageLink } from './src/lib/rehype-image-link';
+import { rehypeImageRow } from './src/lib/rehype-image-row';
+import { rehypeCloudinaryResize } from './src/lib/rehype-cloudinary-resize';
+import { rehypeXEmbed } from './src/lib/rehype-x-embed';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkGithubAlerts],
-    rehypePlugins: [rehypeImageLink],
+    rehypePlugins: [rehypeImageLink, rehypeImageRow, rehypeCloudinaryResize, rehypeXEmbed],
   },
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,
