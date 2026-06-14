@@ -16,9 +16,7 @@ export default defineConfig({
   },
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,
-  // GitHub Pagesのリポジトリ名をbaseとして設定
-  base: '/blog',
-  site: 'https://u83ism.github.io',
+  site: 'https://blog-9z4.pages.dev',
   output: 'static',
   // trailingSlash: 'always' により import.meta.env.BASE_URL = '/blog/' となる
   trailingSlash: 'always',

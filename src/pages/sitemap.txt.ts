@@ -8,7 +8,7 @@ export const GET: APIRoute = async ({ site }) => {
   const allPosts = await getCollection('posts');
   const base = import.meta.env.BASE_URL;
 
-  // サイトのベースURL（末尾スラッシュあり）例: https://u83ism.github.io/blog/
+  // サイトのベースURL（末尾スラッシュあり）例: https://blog-9z4.pages.dev/
   const sitemapBase = new URL(base, site).href;
 
   const urls: string[] = [];
