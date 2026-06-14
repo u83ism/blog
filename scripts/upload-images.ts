@@ -69,10 +69,10 @@ for (const file of files) {
   }
 
   try {
-    const isNew = !(await cloudinary.api.resource(publicId).catch(() => null));
+    const isNew = !(await cloudinary.api.resource(`blog/${publicId}`).catch(() => null));
 
     const result = await cloudinary.uploader.upload(filePath, {
-      public_id: publicId,
+      public_id: `blog/${publicId}`,
       overwrite: true,
     });
 
