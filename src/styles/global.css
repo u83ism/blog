@@ -330,6 +330,18 @@ img {
   margin-bottom: 0;
 }
 
+/* ===== YouTube埋め込み ===== */
+.post-content .youtube-embed {
+  margin: 1.5em 0;
+  aspect-ratio: 16 / 9;
+}
+
+.post-content .youtube-embed iframe {
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius);
+}
+
 /* ===== ユーティリティ ===== */
 .visually-hidden {
   position: absolute;

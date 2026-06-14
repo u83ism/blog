@@ -5,13 +5,14 @@ import { rehypeImageLink } from './src/lib/rehype-image-link';
 import { rehypeImageRow } from './src/lib/rehype-image-row';
 import { rehypeCloudinaryResize } from './src/lib/rehype-cloudinary-resize';
 import { rehypeXEmbed } from './src/lib/rehype-x-embed';
+import { rehypeYoutubeEmbed } from './src/lib/rehype-youtube-embed';
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     remarkPlugins: [remarkGithubAlerts],
-    rehypePlugins: [rehypeImageLink, rehypeImageRow, rehypeCloudinaryResize, rehypeXEmbed],
+    rehypePlugins: [rehypeImageLink, rehypeImageRow, rehypeCloudinaryResize, rehypeXEmbed, rehypeYoutubeEmbed],
   },
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,
