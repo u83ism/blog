@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://u83ism.github.io/blog/sitemap.txt
+Sitemap: https://u83-blog.pages.dev/sitemap-index.xml

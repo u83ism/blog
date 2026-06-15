@@ -2,13 +2,13 @@
 
 ゆうやみ（@u83unlimited）の雑記ブログ。2000〜2014年のDLBアーカイブを移行したもの。
 
-**URL**: https://u83ism.github.io/blog/
+**URL**: https://u83-blog.pages.dev/
 
 ## 技術スタック
 
 - **Astro 6** (SSG)
 - **TypeScript**
-- **GitHub Pages** (mainブランチpushで自動デプロイ)
+- **Cloudflare Pages** (mainブランチpushで自動デプロイ)
 
 ## セットアップ
 
