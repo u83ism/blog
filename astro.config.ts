@@ -16,7 +16,7 @@ export default defineConfig({
   },
   // ホバー時にページを事前取得してページ遷移を高速化
   prefetch: true,
-  site: 'https://blog-9z4.pages.dev',
+  site: 'https://u83-blog.pages.dev',
   output: 'static',
   // trailingSlash: 'always' により import.meta.env.BASE_URL = '/blog/' となる
   trailingSlash: 'always',
