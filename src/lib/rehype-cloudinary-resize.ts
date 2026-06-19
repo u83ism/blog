@@ -3,7 +3,8 @@ import type { Root, Element } from 'hast';
 
 // Cloudinaryの変換パラメータ（高さ360px上限、縮小のみ、品質・フォーマット自動）
 const TRANSFORM = 'h_360,c_limit,q_auto,f_auto';
-const CLOUDINARY_UPLOAD_RE = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)(v\d+\/.+)$/;
+// v{version}/ はオプション（バージョンなしURLにも対応）
+const CLOUDINARY_UPLOAD_RE = /^(https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\/)((?:v\d+\/)?.+)$/;
 
 const applyTransform = (url: string): string => {
   const match = CLOUDINARY_UPLOAD_RE.exec(url);
