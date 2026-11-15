@@ -1,10 +1,10 @@
 ---
 // アーカイブトップ（年一覧）ページ
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
 import Layout from '@/layouts/Layout.astro';
 import { groupPostsByYear } from '@/lib/posts';
 
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const yearGroups = groupPostsByYear(allPosts);
 
 const base = import.meta.env.BASE_URL;

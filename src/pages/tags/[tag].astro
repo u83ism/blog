@@ -1,6 +1,7 @@
 ---
 // タグ別記事一覧ページ
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
+import type { Post } from '@/types/post';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import TagList from '@/components/TagList.astro';
@@ -8,7 +9,7 @@ import { sortPostsByDateDesc, collectTags } from '@/lib/posts';
 import type { Tag } from '@/lib/tags';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
 
   // 全タグを収集する
   const tagSet = new Set<Tag>();
@@ -30,13 +31,13 @@ export async function getStaticPaths() {
 
 interface Props {
   tag: string;
-  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+  posts: readonly Post[];
 }
 
 const { tag, posts } = Astro.props;
 
 // サイドバー用データ
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const tags = collectTags(allPosts);
 ---
 

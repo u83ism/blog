@@ -1,4 +1,4 @@
-import type { CollectionEntry } from 'astro:content';
+import type { Post } from '../types/post';
 
 /** date から YYYY年MM月DD日 形式のタイトルを生成する */
 export function formatDateTitle(date: Date): string {
@@ -17,7 +17,7 @@ export function formatDateDisplay(date: Date): string {
 }
 
 /** 記事のタイトルを取得する（title が省略時は日付から自動生成） */
-export function resolveTitle(post: CollectionEntry<'posts'>): string {
+export function resolveTitle(post: Post): string {
   return post.data.title ?? formatDateTitle(post.data.date);
 }
 
@@ -29,8 +29,8 @@ export function buildPostUrl(base: string, id: string): string {
 
 /** 記事を日付降順でソートする */
 export function sortPostsByDateDesc(
-  posts: readonly CollectionEntry<'posts'>[],
-): CollectionEntry<'posts'>[] {
+  posts: readonly Post[],
+): Post[] {
   return [...posts].sort(
     (postA, postB) => postB.data.date.getTime() - postA.data.date.getTime(),
   );
@@ -38,7 +38,7 @@ export function sortPostsByDateDesc(
 
 /** 記事からすべてのタグを集計し、出現数降順で返す */
 export function collectTags(
-  posts: readonly CollectionEntry<'posts'>[],
+  posts: readonly Post[],
 ): { tag: string; count: number }[] {
   const counter = new Map<string, number>();
   for (const post of posts) {
@@ -53,9 +53,9 @@ export function collectTags(
 
 /** 記事を年ごとにグループ化する（降順） */
 export function groupPostsByYear(
-  posts: readonly CollectionEntry<'posts'>[],
-): { year: number; posts: CollectionEntry<'posts'>[] }[] {
-  const groups = new Map<number, CollectionEntry<'posts'>[]>();
+  posts: readonly Post[],
+): { year: number; posts: Post[] }[] {
+  const groups = new Map<number, Post[]>();
   for (const post of posts) {
     const year = post.data.date.getFullYear();
     const group = groups.get(year) ?? [];
@@ -77,10 +77,10 @@ export function estimateReadingTime(body: string): number {
 
 /** 共通タグ数が多い順に関連記事を返す（自記事を除く） */
 export function findRelatedPosts(
-  current: CollectionEntry<'posts'>,
-  posts: readonly CollectionEntry<'posts'>[],
+  current: Post,
+  posts: readonly Post[],
   limit: number = 5,
-): CollectionEntry<'posts'>[] {
+): Post[] {
   const currentTags = new Set(current.data.tags);
   return posts
     .filter((post) => post.id !== current.id)
@@ -96,9 +96,9 @@ export function findRelatedPosts(
 
 /** 記事を月ごとにグループ化する（降順） */
 export function groupPostsByMonth(
-  posts: readonly CollectionEntry<'posts'>[],
-): { month: number; posts: CollectionEntry<'posts'>[] }[] {
-  const groups = new Map<number, CollectionEntry<'posts'>[]>();
+  posts: readonly Post[],
+): { month: number; posts: Post[] }[] {
+  const groups = new Map<number, Post[]>();
   for (const post of posts) {
     const month = post.data.date.getMonth() + 1;
     const group = groups.get(month) ?? [];

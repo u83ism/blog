@@ -1,13 +1,14 @@
 ---
 // 年別アーカイブページ（月別グループ表示）
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
+import type { Post } from '@/types/post';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import ArchiveNav from '@/components/ArchiveNav.astro';
 import { groupPostsByYear, groupPostsByMonth } from '@/lib/posts';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
   const yearGroups = groupPostsByYear(allPosts);
 
   return yearGroups.map(({ year, posts }) => ({
@@ -18,13 +19,13 @@ export async function getStaticPaths() {
 
 interface Props {
   year: number;
-  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+  posts: readonly Post[];
 }
 
 const { year, posts } = Astro.props;
 
 // サイドバー用データ
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const sortedYears = groupPostsByYear(allPosts).map(({ year }) => year);
 
 // 月別グループ化

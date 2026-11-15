@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build && pagefind --site dist",
     "preview": "astro preview",
-    "upload": "tsx scripts/upload-images.ts"
+    "upload": "tsx scripts/upload-images.ts",
+    "test": "tsx --test \"src/**/*.test.ts\""
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.18",

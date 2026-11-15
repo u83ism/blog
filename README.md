@@ -34,6 +34,7 @@ tags: [ゲーム, 日常]
 
 - `title` は省略可（省略時は `YYYY年MM月DD日` で自動生成）
 - `tags` に指定できる値は `src/lib/tags.ts` の `TAGS` 配列で管理
+- `draft: true` を付けると下書きになり、`npm run dev` でだけ表示される（本番ビルドからは除外されるのでコミット・pushしてよい）。下書きは `date` を省略でき、日付未定なら `src/content/posts/drafts/` に置く。詳細と公開手順は [docs/仕様.md](docs/仕様.md) の「下書き」を参照
 
 タグ運用の詳細は [docs/タグ管理.md](docs/タグ管理.md) を参照。
 

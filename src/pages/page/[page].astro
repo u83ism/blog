@@ -1,13 +1,14 @@
 ---
 // ページネーション（2ページ目以降）
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
+import type { Post } from '@/types/post';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import Pagination from '@/components/Pagination.astro';
 import { sortPostsByDateDesc } from '@/lib/posts';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
   const sorted = sortPostsByDateDesc(allPosts);
   const PAGE_SIZE = 20;
   const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
@@ -27,7 +28,7 @@ export async function getStaticPaths() {
 }
 
 interface Props {
-  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+  posts: readonly Post[];
   pageNum: number;
   totalPages: number;
 }

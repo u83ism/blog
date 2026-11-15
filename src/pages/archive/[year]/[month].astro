@@ -1,16 +1,17 @@
 ---
 // 月別アーカイブページ
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
+import type { Post } from '@/types/post';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import ArchiveNav from '@/components/ArchiveNav.astro';
 import { groupPostsByYear, sortPostsByDateDesc } from '@/lib/posts';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
 
   // 年+月の組み合わせを収集してルートを生成
-  const combinationMap = new Map<string, { year: number; month: number; posts: typeof allPosts }>();
+  const combinationMap = new Map<string, { year: number; month: number; posts: Post[] }>();
   for (const post of allPosts) {
     const year = post.data.date.getFullYear();
     const month = post.data.date.getMonth() + 1;
@@ -29,13 +30,13 @@ export async function getStaticPaths() {
 interface Props {
   year: number;
   month: number;
-  posts: Awaited<ReturnType<typeof getCollection<'posts'>>>;
+  posts: readonly Post[];
 }
 
 const { year, month, posts } = Astro.props;
 
 // サイドバー用データ
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const sortedYears = groupPostsByYear(allPosts).map(({ year }) => year);
 ---
 

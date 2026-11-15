@@ -1,11 +1,12 @@
 ---
 // 個別記事ページ（スラッグはファイルパスから生成: posts/2000/2000-04-08）
-import { getCollection, render } from 'astro:content';
+import { render } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
 import PostLayout from '@/layouts/PostLayout.astro';
 import { sortPostsByDateDesc } from '@/lib/posts';
 
 export async function getStaticPaths() {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
   const sorted = sortPostsByDateDesc(allPosts);
 
   return sorted.map((post, index) => ({

@@ -1,11 +1,11 @@
 // RSSフィードエンドポイント
 import rss from '@astrojs/rss';
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
 import { resolveTitle, sortPostsByDateDesc } from '@/lib/posts';
 import type { APIContext } from 'astro';
 
 export async function GET(context: APIContext) {
-  const allPosts = await getCollection('posts');
+  const allPosts = await loadPosts();
   const sorted = sortPostsByDateDesc(allPosts);
 
   return rss({
