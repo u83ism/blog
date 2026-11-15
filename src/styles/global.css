@@ -360,3 +360,16 @@ img {
   margin: 0 auto;
   padding: 0 24px;
 }
+
+/* 下書きバッジ（開発サーバーでのみ表示される下書き記事の目印） */
+.draft-badge {
+  display: inline-block;
+  margin-right: 6px;
+  padding: 1px 8px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  vertical-align: middle;
+  color: var(--white);
+  background: var(--accent-dark);
+  border-radius: 4px;
+}

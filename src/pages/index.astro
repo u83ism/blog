@@ -1,13 +1,13 @@
 ---
 // 記事一覧ページ（最新順、ページネーション付き）
-import { getCollection } from 'astro:content';
+import { loadPosts } from '@/lib/load-posts';
 import Layout from '@/layouts/Layout.astro';
 import PostList from '@/components/PostList.astro';
 import Pagination from '@/components/Pagination.astro';
 import { sortPostsByDateDesc } from '@/lib/posts';
 
 // 全記事を取得・ソート
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const sortedPosts = sortPostsByDateDesc(allPosts);
 
 // ページネーション（1ページあたり20件）

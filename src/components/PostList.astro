@@ -1,10 +1,10 @@
 ---
 // 記事一覧コンポーネント
-import type { CollectionEntry } from 'astro:content';
+import type { Post } from '@/types/post';
 import { resolveTitle, formatDateDisplay, buildPostUrl } from '@/lib/posts';
 
 interface Props {
-  posts: CollectionEntry<'posts'>[];
+  posts: readonly Post[];
 }
 
 const { posts } = Astro.props;
@@ -18,6 +18,7 @@ const base = import.meta.env.BASE_URL;
         {formatDateDisplay(post.data.date)}
       </time>
       <a class="post-title" href={buildPostUrl(base, post.id)} data-astro-prefetch>
+        {post.data.draft && <span class="draft-badge">下書き</span>}
         {resolveTitle(post)}
       </a>
       {post.data.tags.length > 0 && (

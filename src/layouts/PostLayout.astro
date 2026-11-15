@@ -4,18 +4,18 @@ import Layout from './Layout.astro';
 import Breadcrumb from '@/components/Breadcrumb.astro';
 import ShareButtons from '@/components/ShareButtons.astro';
 import { formatDateDisplay, buildPostUrl, resolveTitle, findRelatedPosts, estimateReadingTime } from '@/lib/posts';
-import type { CollectionEntry } from 'astro:content';
-import { getCollection } from 'astro:content';
+import type { Post } from '@/types/post';
+import { loadPosts } from '@/lib/load-posts';
 
 interface Props {
-  post: CollectionEntry<'posts'>;
-  prevPost?: CollectionEntry<'posts'>;
-  nextPost?: CollectionEntry<'posts'>;
+  post: Post;
+  prevPost?: Post;
+  nextPost?: Post;
 }
 
 const { post, prevPost, nextPost } = Astro.props;
 
-const allPosts = await getCollection('posts');
+const allPosts = await loadPosts();
 const relatedPosts = findRelatedPosts(post, allPosts);
 const readingTime = estimateReadingTime(post.body ?? '');
 
@@ -36,6 +36,7 @@ const dateDisplay = formatDateDisplay(post.data.date);
         <div class="post-meta">
           <time class="post-date" datetime={post.data.date.toISOString()}>{dateDisplay}</time>
           <span class="post-reading-time">約{readingTime}分</span>
+          {post.data.draft && <span class="draft-badge">下書き</span>}
         </div>
         <h1 class="post-title">{title}</h1>
         {post.data.tags.length > 0 && (
